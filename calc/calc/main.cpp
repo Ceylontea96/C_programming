@@ -9,7 +9,6 @@ int main() {
 	printf("수식을 입력하세요.\n");
 	formula = getString();
 
-
 	printf("입력한 수식 : %s\n", formula);
 
 	int result = 0;// 0:성공, 1:잘못된 수식, 2:괄호 미완성
@@ -19,7 +18,6 @@ int main() {
 	if (result == 0) printf("변경된 수식 : %s\n", formula);
 	else			 printf("잘못된 수식입니다.\n");
 	
-
 	double calc_result = calculate(formula);
 	printf("계산결과 : %.3f\n", calc_result);
 
