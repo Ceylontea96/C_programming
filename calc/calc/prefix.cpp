@@ -3,7 +3,6 @@
 char stack[100];
 int pointer = 0;
 
-
 int toPrefix(char* formula) {
 	int result = 0; // 0:성공, 1:잘못된 수식, 2:괄호 미완성
 
@@ -15,9 +14,7 @@ int toPrefix(char* formula) {
 		if (bf_idx > 0) pre = formula[bf_idx - 1];
 		char ch = formula[bf_idx];
 
-		if ('0' <= ch && ch <= '9') {
-			temp[af_idx++] = ch;
-		}
+		if ('0' <= ch && ch <= '9') temp[af_idx++] = ch;
 		else {
 			if (isEmpty()) {
 				stack_push(ch);
@@ -98,22 +95,12 @@ int check_priority(char oper) {
 	int prior = -1; //1:우선순위, 1:ㅇㅇ, -1:후순위
 	char pre_oper = stack[pointer - 1];
 	if (oper == '+' || oper == '-') {
-		if (pre_oper == '(' || pre_oper == ')') {
-			prior = 1;
-		}
-		else if (pre_oper == '+' || pre_oper == '-') {
-			prior = -1;
-		}
-		else {
-			prior = -1;
-		}
+		if		(pre_oper == '(' || pre_oper == ')') prior = 1;
+		else if (pre_oper == '+' || pre_oper == '-') prior = -1;
+		else										 prior = -1;
 	}
 	else if (oper == '*' || oper == '/') {
-		if (pre_oper == '+' || pre_oper == '-') {
-			prior = 1;
-		}
-
+		if (pre_oper == '+' || pre_oper == '-') prior = 1;
 	}
-	printf("우선순위 : %d (연산자 : %c, %c)\n", prior, pre_oper, oper);
 	return prior;
 }

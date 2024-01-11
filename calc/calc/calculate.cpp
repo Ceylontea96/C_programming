@@ -11,19 +11,14 @@ double calculate(char* formula) {
 		char ch = formula[index];
 
 		if ('0' <= ch && ch <= '9') {
-			if (preNum == 0) {
-				preNum = ch - '0';
-			}
-			else {
-				preNum = preNum * 10 + (ch - '0');
-			}
+			if (preNum == 0)	preNum = ch - '0';
+			else				preNum = preNum * 10 + (ch - '0');
 		}
 		else if (ch == ' ') {
 			if (preNum != 0) {
 				i_stack_push((double)preNum);
 				preNum = 0;
 			}
-
 		}
 		else {
 			if (preNum != 0) {
@@ -33,28 +28,14 @@ double calculate(char* formula) {
 			double num2 = i_stack_pop();
 			double num1 = i_stack_pop();
 			double result = -1;
-			if (ch == '+') {
-				result = num1 + num2;
-				printf("%.3f + %.3f = %.3f\n", num1, num2, result);
-			}
-			else if (ch == '-') {
-				result = num1 - num2;
-				printf("%.3f - %.3f = %.3f\n", num1, num2, result);
-			}
-			else if (ch == '*') {
-				result = num1 * num2;
-				printf("%.3f * %.3f = %.3f\n", num1, num2, result);
-			}
-			else if (ch == '/') {
-				result = num1 / num2;
-				printf("%.3f / %.3f = %.3f\n", num1, num2, result);
-			}
+			if (ch == '+')		result = num1 + num2;
+			else if (ch == '-') result = num1 - num2;
+			else if (ch == '*') result = num1 * num2;
+			else if (ch == '/') result = num1 / num2;
 			i_stack_push(result);
 		}
-
 		++index;
 	}
-
 	return i_stack_pop();
 }
 
