@@ -2,7 +2,6 @@
 #include "prefix.h"
 #include "calculate.h"
 
-
 int main() {
 	char* formula = NULL;
 
