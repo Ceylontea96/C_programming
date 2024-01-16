@@ -139,7 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="column.cpp" />
     <ClCompile Include="common.cpp" />
     <ClCompile Include="database.cpp" />
     <ClCompile Include="main.cpp" />
@@ -147,7 +146,6 @@
     <ClCompile Include="user.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="column.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="database.h" />
     <ClInclude Include="main.h" />

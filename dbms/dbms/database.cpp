@@ -61,7 +61,7 @@ int DbMenu() { // DB 선택 단계에서 입력한 명령어를 검증하는 함수
 					printf("존재하지 않는 database입니다.\n");
 					continue;
 				}
-				if (deleteDB(dbName))	printf("Database 삭제 성공[%s]\n", dbName);
+				if (dropDB(dbName))	printf("Database 삭제 성공[%s]\n", dbName);
 				//else					printf("Database 삭제 실패[%s]\n", dbName);
 				continue;
 			}
@@ -113,7 +113,7 @@ int createDB(char* dbName) {
 	return 0;
 }
 
-int deleteDB(char* dbName) {
+int dropDB(char* dbName) {
 		database* preDb = NULL;
 		database* db = dbTop->link;
 		if (dbTop->link == NULL || !isDupDb(dbName)) return -1;

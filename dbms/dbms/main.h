@@ -2,7 +2,6 @@
 #include "user.h"
 #include "database.h"
 #include "table.h"
-#include "column.h"
 
 user* login_user;
 userHead* userTop;

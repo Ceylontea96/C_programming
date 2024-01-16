@@ -25,11 +25,25 @@ int tableMenu() { // 명령어 종류 1.create, 2.show, 3.drop, 4.insert, 5.update, 6
 
 
 		} else if (strcmp(temp, "show") == 0) {
-
+			if (strcmp(input2, "tables") == 0) {
+				showTbs();
+				continue;
+			}
 
 		}
 		else if (strcmp(temp, "drop") == 0) {
-
+			temp = strtok_s(NULL, " ", &tbName);
+			if (strcmp(temp, "table") == 0) {
+				tbName = input2;
+				printf("test [%s]\n", tbName);
+				if (!isDupTb(tbName)) {
+					printf("존재하지 않는 table입니다.\n");
+					continue;
+				}
+				if (dropTB(tbName))	printf("table 삭제 성공[%s]\n", tbName);
+				//else					printf("table 삭제 실패[%s]\n", dbName);
+				continue;
+			}
 
 		}
 		else if (strcmp(temp, "insert") == 0) {
@@ -91,7 +105,7 @@ int createTB(char* tbName) {
 	return 0;
 }
 
-int deleteTB(char* tbName) {
+int dropTB(char* tbName) {
 	table* preTb = NULL;
 	table* tb = tableTop->link;
 	if (tableTop->link == NULL || !isDupTb(tbName)) return -1;
@@ -128,5 +142,23 @@ int showTbs() {
 		}
 	}
 	printf("==================================\n");
+	return 0;
+}
+
+int insertTb() {
+
+
+	return 0;
+}
+
+int updateTb() {
+	return 0;
+}
+
+int deleteTb() {
+	return 0;
+}
+
+int selectTb() {
 	return 0;
 }

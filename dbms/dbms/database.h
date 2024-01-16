@@ -18,6 +18,6 @@ extern dbHead* dbTop;
 int DbMenu();
 bool isDupDb(char* dbName);
 int createDB(char* dbName);
-int deleteDB(char* dbName);
+int dropDB(char* dbName);
 int useDB(char* dbName);
 int showDbs();
