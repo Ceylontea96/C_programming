@@ -53,7 +53,7 @@ int DbMenu() { // DB 선택 단계에서 입력한 명령어를 검증하는 함수
 			}
 		}
 		else if (strcmp(temp, "drop") == 0) {
-			temp = strtok_s(NULL, " ", &dbName);
+			temp = strtok_s(NULL, " ", &input2);
 			if (strcmp(temp, "database") == 0) {
 				dbName = input2;
 				printf("test [%s]\n", dbName);
@@ -84,14 +84,15 @@ int DbMenu() { // DB 선택 단계에서 입력한 명령어를 검증하는 함수
 
 bool isDupDb(char* dbName) { // DB 중복 검증 함수(DB 존재 시 true, 아닐시 false를 return)
 	bool result = true;
-	if (dbTop->link == NULL) result = false;
-	else {
+	if (dbTop->link != NULL) {
 		database* db = dbTop->link;
 		while (db != NULL && db->dbname != NULL) {
-			if (strcmp(dbName, db->dbname) == 0) break;
+			if (strcmp(dbName, db->dbname) == 0) {
+				result = true;
+				break;
+			}
 			db = db->link;
 		}
-		result = false;
 	}
 	return result;
 }

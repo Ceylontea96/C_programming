@@ -1,5 +1,2 @@
-﻿  main.cpp
-D:\git\c_programming\dbms\dbms\main.h(5,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'column.h': No such file or directory
-  table.cpp
-  user.cpp
-  코드를 생성하고 있습니다...
+﻿  user.cpp
+  dbms.vcxproj -> D:\git\c_programming\dbms\Debug\dbms.exe

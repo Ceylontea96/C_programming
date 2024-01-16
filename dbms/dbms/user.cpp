@@ -45,11 +45,13 @@ void sign_in() {	// 로그인 함수
 	printf("======== 로그인 ========\n");
 	printf("아이디를 입력해주세요 (0. 메인메뉴로 돌아가기)\n");
 	while (1) {
+		printf("ID ");
 		char* id = getString();
 		if (strcmp(id, "0") == 0) return;
 		if (!isDupId(id)) printf("존재하지 않는 아이디입니다.\n");
 		else {
 			while (1) {
+				printf("PW ");
 				char* pw = getString();
 				if (strcmp(id, "0") == 0) return;
 				if (checkPw(id, pw)) {
@@ -63,15 +65,16 @@ void sign_in() {	// 로그인 함수
 }
 
 bool isDupId(char* id) {	// ID 중복여부 확인 함수(중복이면 TRUE, 중복이 아니면 FALSE를 return)
-	bool result = true;
-	if (userTop->link == NULL) result = false;
-	else {
+	bool result = false;
+	if (userTop->link != NULL) {
 		user* user = userTop->link;
 		while (user != NULL && user->username != NULL) {
-			if (strcmp(id, user->username) == 0) break;
+			if (strcmp(id, user->username) == 0) {
+				result = true;
+				break;
+			}
 			user = user->link;
 		}
-		result = false;
 	}
 	return result;
 }
