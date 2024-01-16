@@ -1,27 +1,23 @@
 #include "main.h"
 
-struct node
-{
-	
-};
 
-char* db_pointer;
 
 int main() {
-	init_stack();
 
 	while (1) {
 		printf("========== 메인 메뉴 ==========\n");
 		if (loginMenu() == -1) exit(0);
 
 		while (1) {
-			int dbResult = DbMenu();	// db 삭제 코드 완성하기
-			if (dbResult == 5) {	//로그아웃
+			int dbResult = DBMenu();	// db 삭제 코드 완성하기
+			if (dbResult == -1) {	//로그아웃
 				login_user = NULL;
 				break;
 			}
 			else if (dbResult == -1) exit(0);	//프로그램 종료
-			else if (dbResult == 0) {
+			else {
+
+				/*
 				while (1) {
 					int tableResult = tableMenu();
 
@@ -34,6 +30,8 @@ int main() {
 
 					}
 				}
+				*/
+				
 			}
 
 		}
@@ -58,15 +56,6 @@ int main() {
 //select id,pwd from tb1;
 
 
-void init_stack() {
-	userTop = (userHead*)malloc(sizeof(userHead));
-	userTop->link = NULL;
-	dbTop = (dbHead*)malloc(sizeof(dbHead));
-	dbTop->link = NULL;
-	tableTop = (tableHead*)malloc(sizeof(tableHead));
-	tableTop->link = NULL;
-	columnTop = (columnHead*)malloc(sizeof(columnHead));
-	columnTop->link = NULL;
-}
+
 
 

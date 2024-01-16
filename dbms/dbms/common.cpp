@@ -10,7 +10,7 @@ char* getString() {
 		if (ch != '\n') temp[index++] = ch;
 	} while (ch != '\n');
 
-	char* query = (char*)malloc(sizeof(char) * (index + 1) * 2);
-	strncpy_s(query, index + 1, temp, index);
+	char* query = (char*)malloc(sizeof(char) * index);
+	strncpy_s(query, index+1, temp, index);
 	return query;
 }

@@ -1,23 +1,15 @@
-#pragma once
-//#include "table.h"
+#ifndef _DATABASE_
+#define _DATABASE_ 
 #include "common.h"
-
-typedef struct database {
-	char dbname[MAX];
-	struct table* tlink;
-	struct database* link;
-} database;
-
-typedef struct dbHead {
-	struct database* link;
-} dbHead;
+#include "structs.h"
 
 extern database* using_db;
-extern dbHead* dbTop;
+extern database* dbTop;
 
-int DbMenu();
 bool isDupDb(char* dbName);
 int createDB(char* dbName);
-int dropDB(char* dbName);
+table* dropDB(char* dbName);
+table* dropDB(database* db);
 int useDB(char* dbName);
 int showDbs();
+#endif

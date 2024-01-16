@@ -1,41 +1,16 @@
-#pragma once
-//#include "column.h"
+#ifndef _TABLE_
+#define _TABLE_ 
 #include "common.h"
+#include "structs.h"
 
-typedef struct table {
-	char tbname[MAX];
-	struct column* clink;
-	struct table* link;
-} table;
+extern table* tableTop;
+extern column* columnTop;
+extern data* dataTop;
 
-typedef struct tableHead {
-	struct table* link;
-} tableHead;
-
-typedef struct column {
-	int index;
-	char field[MAX];
-	char type[MAX];
-	int size;
-	struct column* nextcol;
-	struct data* datalink;
-} column;
-
-typedef struct columnHead {
-	struct column* link;
-} columnHead;
-
-typedef struct data {
-	char data[MAX];
-	int check;
-	struct data* nextdata;
-} data;
-
-extern tableHead* tableTop;
-extern columnHead* columnTop;
-
-int tableMenu();
 bool isDupTb(char* tbName);
 int createTB(char* tbName);
-int dropTB(char* tbName);
+column* dropTB(char* tbName);
+column* dropTB(table* tb);
 int showTbs();
+
+#endif
