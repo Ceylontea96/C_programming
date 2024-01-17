@@ -1,7 +1,19 @@
 #include "user.h"
 
-user* login_user;
-user* userTop;
+user* login_user = NULL;
+user* userTop = NULL;
+
+user* getUserByName(char* userName) {
+	user* target_user = NULL;
+	if (userTop != NULL) {
+		user* user = userTop;
+		while (user != NULL && user->username != NULL) {
+			if (strcmp(userName, user->username) == 0) target_user = user;
+			user = user->link;
+		}
+	}
+	return target_user;
+}
 
 bool isDupId(char* id) {	// ID 중복여부 확인 함수(중복이면 TRUE, 중복이 아니면 FALSE를 return)
 	bool result = false;
@@ -20,7 +32,6 @@ bool checkPw(char* id, char* pw) {	// 비밀번호 검증 함수(아이디, 비밀번호 일치시
 	while (user != NULL && user->username != NULL) {
 		if (strcmp(id, user->username) == 0) {
 			if (strcmp(pw, user->pwd) == 0)
-				login_user = user;
 				return true;
 		}
 		user = user->link;
@@ -48,13 +59,16 @@ void create_user(char* id, char* pw, int right) {
 }
 
 database* delete_user(char* id) {
-	user* preUser = userTop;
+	user* preUser = NULL;
 	user* user = userTop;
 	database* db = NULL;
 	while (user != NULL) {
 		if (strcmp(id, user->username) == 0) {
-			if (preUser == userTop) {
+			if (preUser == NULL) {
 				userTop = user->link;
+			}
+			else {
+				preUser->link = user->link;
 			}
 			db = user->dlink;
 			free(user);

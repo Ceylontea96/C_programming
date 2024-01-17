@@ -1,0 +1,12 @@
+create database db1;
+use database db1;
+show databases;
+drop database db1;
+
+logout
+
+create table tb1(    );
+insert into tb1();
+select * from tb1;
+delete a from tb1;
+drop table tb1;

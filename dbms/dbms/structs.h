@@ -37,4 +37,10 @@ typedef struct data {
 	struct data* link;
 } data;
 
+//extern user* login_user;
+extern database* using_db;
+
+
+
+
 #endif

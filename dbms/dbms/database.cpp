@@ -3,8 +3,20 @@
 database* using_db = NULL;
 database* dbTop = NULL;
 
+database* getDbByName(char* dbName) {
+	database* target_db = NULL;
+	if (dbTop != NULL) {
+		database* db = dbTop;
+		while (db != NULL && db->dbname != NULL) {
+			if (strcmp(dbName, db->dbname) == 0) target_db = db;
+			db = db->link;
+		}
+	}
+	return target_db;
+}
+
 bool isDupDb(char* dbName) { // DB 중복 검증 함수(DB 존재 시 true, 아닐시 false를 return)
-	bool result = true;
+	bool result = false;
 	if (dbTop != NULL) {
 		database* db = dbTop;
 		while (db != NULL && db->dbname != NULL) {
@@ -23,11 +35,14 @@ int createDB(char* dbName) {
 	strcpy_s(newDB->dbname, MAX, dbName);
 	newDB->tlink = NULL;
 	newDB->link = NULL;
-
-	if (dbTop->link == NULL) dbTop->link = newDB;
+	//login_user->dlink = newDB;
+	
+	if (dbTop == NULL) {
+		dbTop = newDB;
+		//login_user->dlink = dbTop;
+	}
 	else {
-		if (isDupDb(dbName)) return -1;
-		database* db = dbTop->link;
+		database* db = dbTop;
 		while (db->link != NULL) {
 			db = db->link;
 		}
@@ -80,17 +95,21 @@ int useDB(char* dbName) {
 }
 
 int showDbs() {
-	printf("========== Database 목록 ==========\n");
 	int index = 1;
-	if (dbTop == NULL) return -1;
+	if (dbTop == NULL) {
+		printf("Database 없음\n");
+		return -1;
+	}
 	else {
+		printf("========== Database 목록 ==========\n");
 		database* db = dbTop;
 		while (db != NULL && db->dbname != NULL) {
 			printf("%d. %s\n", index, db->dbname);
 			db = db->link;
 			++index;
 		}
+		printf("==================================\n");
 	}
-	printf("==================================\n");
+	
 	return 0;
 }

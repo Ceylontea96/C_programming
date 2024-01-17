@@ -5,7 +5,7 @@ column* columnTop;
 data* dataTop;
 
 bool isDupTb(char* tbName) { // DB 중복 검증 함수(DB 존재 시 true, 아닐시 false를 return)
-	bool result = true;
+	bool result = false;
 	if (tableTop->link != NULL) {
 		table* tb = tableTop->link;
 		while (tb != NULL && tb->tbname != NULL) {
@@ -25,9 +25,9 @@ int createTB(char* tbName) {
 	newTb->clink = NULL;
 	newTb->link = NULL;
 
-	if (tableTop->link == NULL) tableTop->link = newTb;
+	if (tableTop == NULL) tableTop = newTb;
 	else {
-		table* tb = tableTop->link;
+		table* tb = tableTop;
 		while (tb->link != NULL) {
 			tb = tb->link;
 		}
