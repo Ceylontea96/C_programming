@@ -11,15 +11,19 @@ enum Command {
 	Select,
 	Insert,
 	Delete,
+	Update,
 	Desc,
+	Logout,
 	Exit
 };
-
-
-int dbParsing(char* query);
 
 int checkCommand(char* query);
 char* createParser(char* query);
 char* useParser(char* query);
+char* dropParser(char* query);
 
+char* tableNameParser(char* query);
+char* tableInfoParser(char* query);
+
+char* getQuery();
 #endif

@@ -10,3 +10,40 @@ insert into tb1();
 select * from tb1;
 delete a from tb1;
 drop table tb1;
+
+//create db, use db
+// 
+//create table tb1(id varchar(100), pwd varchar(100), no int(10));
+//insert into tb1(id, pwd, no) values('user', 'user1234', 1);
+//select * from tb1;
+//select id,pwd from tb1;
+
+user
+user
+create database db1;
+use db1;
+create table tb1(id varchar(100), pwd varchar(100), no int(10));
+insert into tb1(id, pwd, no) values('user', 'user1234', 1);
+insert into tb1(id, pwd, no) values('abc', 'alphabet', 2);
+insert into tb1(id, pwd, no) values('tester', 'test', 5);
+insert into tb1(id, pwd, no) values('3dc', 'sfd.34', 1);
+create table tb2(num int(100), grade varchar(100), point double(10));
+insert into tb2(num, grade, point) values(10, 'bronze', 3.5);
+insert into tb2(num, grade, point) values(1, 'silver', 33.45);
+insert into tb2(num, grade, point) values(132, 'bronze', 1.75);
+select * from tb1;
+select * from tb2;
+
+select id from tb1;
+select id,pwd from tb1;
+
+select * from tb1 where pwd = 'test';
+select * from tb1 where no = 1 and pwd = 'sfd.34';
+
+delete from tb1;
+delete from tb1 where no = 1;
+delete from tb2 where num = 10 or grade != 'bronze';
+
+update tb1 set id='test' where pwd = 'test';
+update tb1 set id = 'test', no = 3 where pwd = 'test' and no = 5;
+입력시 사이즈 검증부터

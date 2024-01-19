@@ -20,6 +20,18 @@ void sign_up();
 void sign_in();
 void delete_account();
 void DBMenu();
+
+void useDb(char* dbName);
+void dropDb(char* dbName);
+
+void tableMenu();
+
+void createTb();
+
+
+void dropAllDb(database* db);
 void dropAllTb(table* table);
+void dropAllColumn(column* col);
+void dropAllData(data* data);
 
 #endif

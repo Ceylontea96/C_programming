@@ -8,9 +8,9 @@ extern column* columnTop;
 extern data* dataTop;
 
 bool isDupTb(char* tbName);
-int createTB(char* tbName);
-column* dropTB(char* tbName);
-column* dropTB(table* tb);
-int showTbs();
+void createTable(char* tbName);
+column* dropTable(char* tbName);
+column* dropTable(table* tb);
+void showTables();
 
 #endif

@@ -76,7 +76,8 @@ void delete_account() {
 				pw = getString();
 				if (strcmp(pw, "0") == 0) return;
 				if (checkPw(id, pw)) {
-					delete_user(id);
+					database* db = delete_user(id);
+					dropAllDb(db);
 					printf("회원 탈퇴되었습니다.\n");
 					return;
 				}
@@ -90,115 +91,173 @@ void delete_account() {
 
 void DBMenu() {
 	printf("\n========== 데이터베이스 쿼리를 입력하세요. ==========\n");
-	// 1.create, 2. show, 3. use, 4. drop, 0. logout
+	// 0.create, 1. show, 2. use, 3. drop, 0. logout
 	printf("쿼리 ");
-	char* query = getString();
-	if (_strcmpi(query, "logout") == 0) {
-		login_user = NULL;
-		SYSTEM_STATUS = LOGIN;
-		return;
-	}
-	/*
-	printf("strtok 전 : [%s]\n", query);
-	char* temp = NULL;
-	char* str = strtok_s(query, " ", &temp);
-	printf("strtok 1회 : [%s][%s]\n", query, temp);
-	str = strtok_s(query, " ", &temp);
-	printf("strtok 2회 : [%s][%s]\n", query, temp);
-	*/
+	char* query = getQuery();
 	
 	char command[MAX] = { 0 };
 	sprintf_s(command, MAX, "%s", query);
-	int cmd = checkCommand(command);
 	
-	if (cmd == Error) printf("잘못된 쿼리입니다.\n");
-	else if (cmd == Create) {
-		printf("test1\n");
+	switch (checkCommand(command)) {
+	case Create:
+	{
 		char* dbName = createParser(query);
-		printf("test11\n");
-		if (getDbByName(dbName) == NULL)	createDB(dbName);
-		else								printf("중복된 데이터베이스명입니다.\n");
-		
-	} else if (cmd == Show) {
-
-	}
-	else if (cmd == Use) {
-		printf("test\n");
-		char* dbName = useParser(query);
-		printf("test10\n");
 		database* db = getDbByName(dbName);
-		printf("test20\n");
-		if (db == NULL) printf("존재하지 않는 데이터베이스입니다.\n");
-		else {
-			printf("test30\n");
-			using_db = db;
-			tableTop = using_db->tlink;
-			SYSTEM_STATUS = TABLE;
-			printf("[%s] 데이터베이스 접속 성공!\n", dbName);
-		}
-	}
-	else if (cmd == Drop) {
-
-	}
-	
-	
-	/*
-	if (strcmp(input, "0") == 0)		SYSTEM_STATUS = EXIT;
-	else if (strcmp(input, "1") == 0)	sign_up();
-	else if (strcmp(input, "2") == 0)	sign_in();
-	else if (strcmp(input, "3") == 0)	showUsers();
-	else if (strcmp(input, "4") == 0)	delete_account();
-	else								printf("다시 입력해주세요.\n");
-	while (1) {
-		printf("\n========== 데이터베이스 쿼리를 입력하세요. ==========\n");
-		char* input = getString();
-		
-		char command[MAX] = { 0 };
-		sprintf_s(command, MAX, "%s", input);
-		int option = dbParsing(command);
-		if (option == -1) printf("잘못된 쿼리입니다\n");
-
-		char* temp = NULL;
-		char* cmd = strtok_s(input, " ", &temp);
-		if (option == 1) {	//create
-			cmd = strtok_s(NULL, " ", &temp);
-			if (createDB(temp) == 0) printf("데이터베이스 생성 성공! [%s]\n", temp);
-			else					 printf("이미 존재하는 데이터베이스입니다.[%s]\n", temp);
-		}
-		if (option == 2) {	//use
-			if (useDB(temp) ==  0) {
-				printf("데이터베이스 접속 성공! [%s]\n", temp);
-				break;
+		if (db == NULL) {
+			if (login_user->dlink == NULL) {
+				login_user->dlink = dbTop;
 			}
-			else printf("존재하지 않는 데이터베이스입니다.\n");
+			createDB(dbName);
+			printf("[%s] 생성 성공.\n", dbName);
 		}
-		if (option == 3) {	//show
-			showDbs();
-		}
-		if (option == 4) {	//drop
-			table* table = dropDB(temp);
-			if(table == NULL)	printf("존재하지 않는 데이터베이스입니다.\n");
-			else				dropAllTb(table);
-
-		}
-		if (option == 0) {
-			printf("로그아웃합니다\n");
-			return -1;
-		}
+		else	printf("중복된 데이터베이스명입니다.\n");
+		break;
 	}
-	*/
-
+	case Show:
+		showDbs();
+		break;
+	case Use:
+		useDb(useParser(query));
+		break;
+	case Drop:
+		dropDb(dropParser(query));
+		break;
+	case Logout:
+		login_user = NULL;
+		SYSTEM_STATUS = LOGIN;
+		break;
+	default:
+		printf("잘못된 쿼리입니다.\n");
+		break;
+	}
 	
 	return;
 }
 
-void dropAllTb(table* tb) {
-	table* nextTb = tb->link;
-	while (tb != NULL) {
-		dropTB(tb);
-		tb = nextTb;
+
+void useDb(char* dbName) {
+	database* db = getDbByName(dbName);
+	if (db == NULL) printf("존재하지 않는 데이터베이스입니다.\n");
+	else {
+		using_db = db;
+		tableTop = using_db->tlink;
+		SYSTEM_STATUS = TABLE;
+		printf("[%s] 데이터베이스 접속 성공!\n", dbName);
 	}
+}
+
+void dropDb(char* dbName) {
+	if (getDbByName(dbName) == NULL) printf("존재하지 않는 데이터베이스입니다.\n");
+	else {
+		table* tb = dropDB(dbName);
+		printf("[%s] DB가 삭제되었습니다.\n", dbName);
+	}
+	
+	
+	//dropAllTb();
+}
+
+void tableMenu() {
+	printf("\n========== 테이블 쿼리를 입력하세요. ==========\n");
+	// 0.create, 1. show, 2. use, 3. drop, 4.select, 5. insert, 6. delete, 7. update, 0. logout
+	printf("쿼리 ");
+	char* query = getQuery();
+
+	char command[MAX] = { 0 };
+	sprintf_s(command, MAX, "%s", query);
+
+	switch (checkCommand(command)) {
+	case Create:
+	{
+		
+		break;
+	}
+	case Show:
+		showTables();
+		break;
+	case Use:
+		useDb(useParser(query));
+		break;
+	case Drop:
+		
+		break;
+	case Select:
+
+		break;
+	case Insert:
+
+		break;
+	case Delete:
+
+		break;
+	case Update:
+
+		break;
+	case Logout:
+		login_user = NULL;
+		using_db = NULL;
+		SYSTEM_STATUS = LOGIN;
+		break;
+	default:
+		printf("잘못된 쿼리입니다.\n");
+		break;
+	}
+
+	return;
 }
 
 
 
+
+void createTb(char* query) {
+	
+
+	tableInfoParser();
+
+}
+
+
+
+
+
+void dropAllDb(database* db) {
+	database* nextDb = NULL;
+	while (db != NULL) {
+		nextDb = db->link;
+		dropAllTb(db->tlink);
+		free(db);
+		db = nextDb;
+	}
+}
+
+
+void dropAllTb(table* tb) {
+	table* nextTb = tb;
+	while (tb != NULL) {
+		nextTb = tb->link;
+		dropAllColumn(tb->clink);
+		dropTable(tb);
+		tb = nextTb;
+	}
+}
+
+void dropAllColumn(column* col) {
+	column* nextCol = NULL;
+	while (col != NULL) {
+		nextCol = col->link;
+		dropAllData(col->dlink);
+		free(col);
+		col = nextCol;
+	}
+}
+
+void dropAllData(data* data) {
+	/*
+	data* dt = NULL;
+	while (data != NULL) {
+		dt = data->link;
+		free(data);
+		data = dt;
+	}
+	*/
+}

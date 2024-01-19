@@ -1,4 +1,6 @@
-﻿  parsing.cpp
-C:\Users\SAMSUNG\Desktop\jinho\c_programming\dbms\dbms\parsing.cpp(70): warning C4715: 'checkCommand': 모든 제어 경로에서 값을 반환하지는 않습니다.
-C:\Users\SAMSUNG\Desktop\jinho\c_programming\dbms\dbms\parsing.cpp(83): warning C4172: 지역 변수 또는 임시: dbName의 주소를 반환하고 있습니다.
-  dbms.vcxproj -> C:\Users\SAMSUNG\Desktop\jinho\c_programming\dbms\x64\Debug\dbms.exe
+﻿  main.cpp
+  parsing.cpp
+  process.cpp
+D:\git\c_programming\dbms\dbms\process.cpp(215,2): error C3861: 'tableInfoParser': 식별자를 찾을 수 없습니다.
+  table.cpp
+  코드를 생성하고 있습니다...

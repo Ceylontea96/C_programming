@@ -30,7 +30,7 @@ bool isDupDb(char* dbName) { // DB 중복 검증 함수(DB 존재 시 true, 아닐시 false�
 	return result;
 }
 
-int createDB(char* dbName) {
+void createDB(char* dbName) {
 	database* newDB = (database*)malloc(sizeof(database));
 	strcpy_s(newDB->dbname, MAX, dbName);
 	newDB->tlink = NULL;
@@ -48,7 +48,6 @@ int createDB(char* dbName) {
 		}
 		db->link = newDB;
 	}
-	return 0;
 }
 
 table* dropDB(char* dbName) {
@@ -79,9 +78,8 @@ table* dropDB(database* db) {
 	return tb;
 }
 
-int useDB(char* dbName) {
-	if (!isDupDb(dbName)) return -1;
-	else {
+void useDB(char* dbName) {
+	if (isDupDb(dbName)) {
 		database* db = dbTop;
 		while (db != NULL && db->dbname != NULL) {
 			if (strcmp(dbName, db->dbname) == 0) {
@@ -91,25 +89,19 @@ int useDB(char* dbName) {
 			db = db->link;
 		}
 	}
-	return 0;
 }
 
-int showDbs() {
+void showDbs() {
+	printf("========== Database 목록 ==========\n");
 	int index = 1;
-	if (dbTop == NULL) {
-		printf("Database 없음\n");
-		return -1;
-	}
+	if (dbTop == NULL) printf("[Database 목록 없음]\n");
 	else {
-		printf("========== Database 목록 ==========\n");
 		database* db = dbTop;
 		while (db != NULL && db->dbname != NULL) {
 			printf("%d. %s\n", index, db->dbname);
 			db = db->link;
 			++index;
 		}
-		printf("==================================\n");
 	}
-	
-	return 0;
+	printf("==================================\n");
 }

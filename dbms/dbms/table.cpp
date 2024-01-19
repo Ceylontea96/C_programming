@@ -19,7 +19,7 @@ bool isDupTb(char* tbName) { // DB 중복 검증 함수(DB 존재 시 true, 아닐시 false�
 	return result;
 }
 
-int createTB(char* tbName) {
+void createTable(char* tbName) {
 	table* newTb = (table*)malloc(sizeof(table));
 	strcpy_s(newTb->tbname, MAX, tbName);
 	newTb->clink = NULL;
@@ -33,10 +33,9 @@ int createTB(char* tbName) {
 		}
 		tb->link = newTb;
 	}
-	return 0;
 }
 
-column* dropTB(char* tbName) {
+column* dropTable(char* tbName) {
 	table* preTb = tableTop;
 	table* tb = tableTop;
 	column* comlumn = NULL;
@@ -55,7 +54,7 @@ column* dropTB(char* tbName) {
 	return comlumn;
 }
 
-column* dropTB(table* tb) {
+column* dropTable(table* tb) {
 	table* nowTb = tableTop;
 	table* nextTb = tb->link;
 	column* comlumn = tb->clink;
@@ -64,10 +63,11 @@ column* dropTB(table* tb) {
 	return comlumn;
 }
 
-int showTbs() {
+void showTables() {
 	printf("========== Table 목록 ==========\n");
 	int index = 1;
-	if (tableTop->link != NULL) {
+	if (tableTop == NULL) printf("[Table 목록 없음]\n");
+	else {
 		table* tb = tableTop;
 		while (tb != NULL && tb->tbname != NULL) {
 			printf("%d. %s\n", index, tb->tbname);
@@ -76,7 +76,6 @@ int showTbs() {
 		}
 	}
 	printf("==================================\n");
-	return 0;
 }
 
 int insertTb() {

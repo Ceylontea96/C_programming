@@ -1,88 +1,60 @@
 #include "parsing.h"
 
 
-
-int dbParsing(char* query) {
-	int result = -1;
-	char* context = NULL;
-	char* cmd = strtok_s(query, " ", &context);
-	if (cmd == NULL) return result;
-
-	else if (_strcmpi(cmd, "create") == 0) {	// create database testdb1;
-		cmd = strtok_s(NULL, " ", &context);
-		if (_strcmpi(cmd, "database") == 0) {
-			cmd = strtok_s(NULL, " ", &context);
-			//if (context[0] == '\0') printf("test");
-			if (cmd != NULL && context[0] == '\0') result = 1;
-		}
-	}
-	else if (_strcmpi(cmd, "use") == 0) {		// use testdb1;
-		cmd = strtok_s(NULL, " ", &context);
-		if (cmd != NULL && context[0] == '\0') result = 2;
-	}
-	else if (_strcmpi(cmd, "show") == 0) {	// show databases;
-		cmd = strtok_s(NULL, " ", &context);
-		if (_strcmpi(cmd, "databases") == 0 && context[0] == '\0') result = 3;
-
-	}
-	else if (_strcmpi(cmd, "drop") == 0) {	// drop database testdb1;
-		cmd = strtok_s(NULL, " ", &context);
-		if (_strcmpi(cmd, "database") == 0) {
-			cmd = strtok_s(NULL, " ", &context);
-			if (cmd != NULL && context[0] == '\0') result = 4;
-		}
-	}
-	else if (_strcmpi(cmd, "logout") == 0) {
-		if (context[0] == '\0') {
-			result = 0;
-		}
-	}
-
-	return result;
-}
-
 int checkCommand(char* query) {
 	int result = Error;
-	if (query[strlen(query) - 1] != ';') return Error;
-	else query[strlen(query) - 1] = '\0';
+	if (_strcmpi(query, "logout") == 0) return Logout;
 
 	char* context = NULL;
 	char* cmd = strtok_s(query, " ", &context);
 	if (_strcmpi(cmd, "create") == 0) {
-		if(_strcmpi(strtok_s(NULL, " ", &context), "database") == 0)
-		cmd = strtok_s(NULL, " ", &context);	// database name
-		if (cmd != NULL && context[0] == '\0') result = Create;
+		cmd = strtok_s(NULL, " ", &context);
+		if (_strcmpi(cmd, "database") == 0) {
+			cmd = strtok_s(NULL, " ", &context);	// database name
+			if (cmd != NULL && context[0] == '\0') {
+				result = Create;
+			}
+		}
+		else if (_strcmpi(cmd, "table") == 0) {
+			cmd = strtok_s(NULL, "(", &context);
+			printf("(Table Query) cmd:[%s], context:[%s]\n", cmd, context);
+
+		}
 	}
 	else if (_strcmpi(cmd, "show") == 0) {
-			cmd = strtok_s(NULL, " ", &context);	// database name
-		if (cmd != NULL && context[0] == '\0') result = Show;
+		cmd = strtok_s(NULL, " ", &context);	// database name
+		if (_strcmpi(cmd, "databases") == 0 && context[0] == '\0') result = Show;
 	}
 	else if (_strcmpi(cmd, "use") == 0) {
-		if (_strcmpi(strtok_s(NULL, " ", &context), "database") == 0)
+		if (_strcmpi(strtok_s(NULL, " ", &context), "database") == 0) {
 			cmd = strtok_s(NULL, " ", &context);	// database name
-		if (cmd != NULL && context[0] == '\0') result = Use;
+			if (cmd != NULL && context[0] == '\0') result = Use;
+		}
 	}
 	else if (_strcmpi(cmd, "drop") == 0) {
-		if (_strcmpi(strtok_s(NULL, " ", &context), "database") == 0)
+		if (_strcmpi(strtok_s(NULL, " ", &context), "database") == 0) {
 			cmd = strtok_s(NULL, " ", &context);	// database name
-		if (cmd != NULL && context[0] == '\0') result = Drop;
+			if (cmd != NULL && context[0] == '\0') result = Drop;
+		}	
 	}
+	return result;
 }
 
 char* createParser(char* query) {	// create 쿼리문을 파싱해서 db명을 리턴하는 함수
 	char* context = NULL;
-	char* crud = strtok_s(query, " ", &context);
-	crud = strtok_s(NULL, " ", &context);
-	if (_strcmpi(crud, "database") == 0) {
-		crud = strtok_s(NULL, " ", &context);
-		if (crud != NULL && context[0] == NULL) {
-			printf("crud[%s], context[%s]\n", crud, context);
-			char dbName[MAX] = { 0 };
-			sprintf_s(dbName, sizeof(crud)-1, "%s", crud);
-			printf("crud[%s], context[%s], dbName[%s]\n", crud, context, dbName);
+	char* token = strtok_s(query, " ", &context);
+	token = strtok_s(NULL, " ", &context);
+	if (_strcmpi(token, "database") == 0) {
+		char* dbName = strtok_s(NULL, " ", &context);
+		if (dbName != NULL && context[0] == '\0') {
 			return dbName;
 		}
-	} else if (_strcmpi(crud, "table") == 0) {
+	} else if (_strcmpi(token, "table") == 0) {
+		char table[4] = { 0 };
+		char* tbName = strtok_s(NULL, "(", &context);
+		if (tbName != NULL && context != NULL) {
+			table[0] = *tbName;
+		}
 
 	}
 	return NULL;
@@ -90,15 +62,83 @@ char* createParser(char* query) {	// create 쿼리문을 파싱해서 db명을 리턴하는 함
 
 char* useParser(char* query) {
 	char* context = NULL;
-	char* crud = strtok_s(query, " ", &context);
-	crud = strtok_s(NULL, " ", &context);
-	if (_strcmpi(crud, "database") == 0) {
-		crud = strtok_s(NULL, " ", &context);
-		if (crud != NULL && context[0] == '\0') {
-			char* dbName = { 0 };
-			strncpy_s(dbName, strlen(crud), crud, strlen(crud) - 1);
+	char* token = strtok_s(query, " ", &context);
+	token = strtok_s(NULL, " ", &context);
+	if (_strcmpi(token, "database") == 0) {
+		char* dbName = strtok_s(NULL, " ", &context);
+		if (dbName != NULL && context[0] == '\0') {
+			//printf("(useParser)[%s] [%s] !!!\n", crud, dbName);
 			return dbName;
 		}
 	}
 	return NULL;
+}
+
+char* dropParser(char* query) {
+	char* context = NULL;
+	char* token = strtok_s(query, " ", &context);
+	token = strtok_s(NULL, " ", &context);
+	if (_strcmpi(token, "database") == 0) {
+		char* dbName = strtok_s(NULL, " ", &context);
+		if (dbName != NULL && context[0] == '\0') {
+			return dbName;
+		}
+	}
+	else if (_strcmpi(token, "table") == 0) {
+		
+	}
+	else {
+		
+	}
+	return NULL;
+}
+
+char* tableNameParser(char* query) {
+	char* tbName = NULL;
+	char* context = NULL;
+	char* cmd = strtok_s(query, " ", &context);
+	if (_strcmpi(cmd, "create") == 0) {
+		cmd = strtok_s(NULL, " ", &context);
+		if (_strcmpi(cmd, "table") == 0) {
+			cmd = strtok_s(NULL, "(", &context);
+			if (cmd != NULL && context != NULL) tbName = cmd;
+		}
+
+	} else if (_strcmpi(cmd, "insert") == 0) {
+		cmd = strtok_s(NULL, " ", &context);
+		if (_strcmpi(cmd, "table") == 0) {
+			cmd = strtok_s(NULL, "(", &context);
+			if (cmd != NULL && context != NULL) tbName = cmd;
+		}
+	}
+	else if (_strcmpi(cmd, "select") == 0) {
+		cmd = strtok_s(NULL, " ", &context);  // [*] [from tb1]
+		cmd = strtok_s(NULL, " ", &context);  // [from] [tb1]
+		if (_strcmpi(cmd, "from") == 0) {
+			cmd = strtok_s(NULL, "(", &context);
+			if (cmd != NULL && context == NULL) tbName = context;
+		}
+	}
+	else if (_strcmpi(cmd, "delete") == 0) {
+
+	}
+	else if (_strcmpi(cmd, "drop") == 0) {
+
+	}
+	return tbName;
+}
+
+char* tableInfoParser(char* query) {
+
+
+	return NULL;
+}
+
+
+
+char* getQuery() {
+	char* query = getString();
+	if (query[strlen(query) - 1] != ';') return NULL;
+	else query[strlen(query) - 1] = '\0';
+	return query;
 }

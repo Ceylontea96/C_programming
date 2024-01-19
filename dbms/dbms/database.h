@@ -8,9 +8,9 @@ extern database* dbTop;
 
 database* getDbByName(char* dbName);
 bool isDupDb(char* dbName);
-int createDB(char* dbName);
+void createDB(char* dbName);
 table* dropDB(char* dbName);
 table* dropDB(database* db);
-int useDB(char* dbName);
-int showDbs();
+void useDB(char* dbName);
+void showDbs();
 #endif
