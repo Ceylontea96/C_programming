@@ -12,5 +12,6 @@ void createTable(char* tbName);
 column* dropTable(char* tbName);
 column* dropTable(table* tb);
 void showTables();
+table* getTableByName(char* tbName);
 
 #endif

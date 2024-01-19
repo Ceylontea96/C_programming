@@ -21,17 +21,19 @@ bool isDupTb(char* tbName) { // DB Áßº¹ °ËÁõ ÇÔ¼ö(DB Á¸Àç ½Ã true, ¾Æ´Ò½Ã false¸
 
 void createTable(char* tbName) {
 	table* newTb = (table*)malloc(sizeof(table));
-	strcpy_s(newTb->tbname, MAX, tbName);
-	newTb->clink = NULL;
-	newTb->link = NULL;
+	if (newTb != NULL) {
+		strcpy_s(newTb->tbname, MAX, tbName);
+		newTb->clink = NULL;
+		newTb->link = NULL;
 
-	if (tableTop == NULL) tableTop = newTb;
-	else {
-		table* tb = tableTop;
-		while (tb->link != NULL) {
-			tb = tb->link;
+		if (tableTop == NULL) tableTop = newTb;
+		else {
+			table* tb = tableTop;
+			while (tb->link != NULL) {
+				tb = tb->link;
+			}
+			tb->link = newTb;
 		}
-		tb->link = newTb;
 	}
 }
 
@@ -76,6 +78,18 @@ void showTables() {
 		}
 	}
 	printf("==================================\n");
+}
+
+table* getTableByName(char* tbName) {
+	table* target_tb = NULL;
+	if (tableTop != NULL) {
+		table* tb = tableTop;
+		while (tb != NULL && tb->tbname != NULL) {
+			if (strcmp(tbName, tb->tbname) == 0) target_tb = tb;
+			tb = tb->link;
+		}
+	}
+	return target_tb;
 }
 
 int insertTb() {

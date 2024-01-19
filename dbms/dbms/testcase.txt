@@ -47,3 +47,38 @@ delete from tb2 where num = 10 or grade != 'bronze';
 update tb1 set id='test' where pwd = 'test';
 update tb1 set id = 'test', no = 3 where pwd = 'test' and no = 5;
 입력시 사이즈 검증부터
+
+
+
+
+
+
+
+char* tbName = tableNameParser(command);
+	printf("table name [%s]\n", tbName);
+	printf("command = [%s]\n", command);
+
+	if (_strcmpi(command, "create") == 0) {
+
+	} else if (_strcmpi(command, "show") == 0) {
+
+	}
+	else if (_strcmpi(command, "use") == 0) {
+
+	}
+	else if (_strcmpi(command, "drop") == 0) {
+
+	}
+	else if (_strcmpi(command, "select") == 0) {
+
+	}
+	else if (_strcmpi(command, "insert") == 0) {
+
+	}
+	else if (_strcmpi(command, "delete") == 0) {
+
+	}
+	else if (_strcmpi(command, "update") == 0) {
+
+	}
+	return;

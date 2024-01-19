@@ -41,20 +41,22 @@ bool checkPw(char* id, char* pw) {	// 비밀번호 검증 함수(아이디, 비밀번호 일치시
 
 void create_user(char* id, char* pw, int right) {
 	user* newUser = (user*)malloc(sizeof(user));
-	snprintf(newUser->username, MAX, id);
-	strcpy_s(newUser->pwd, MAX, pw);
-	if(right == 1)	strcpy_s(newUser->right, MAX, "root");
-	else			strcpy_s(newUser->right, MAX, "guest");
-	newUser->dlink = NULL;
-	newUser->link = NULL;
+	if (newUser != NULL) {
+		snprintf(newUser->username, MAX, id);
+		strcpy_s(newUser->pwd, MAX, pw);
+		if (right == 1)	strcpy_s(newUser->right, MAX, "root");
+		else			strcpy_s(newUser->right, MAX, "guest");
+		newUser->dlink = NULL;
+		newUser->link = NULL;
 
-	if (userTop == NULL) userTop = newUser;
-	else {
-		user* user = userTop;
-		while (user->link != NULL) {
-			user = user->link;
+		if (userTop == NULL) userTop = newUser;
+		else {
+			user* user = userTop;
+			while (user->link != NULL) {
+				user = user->link;
+			}
+			user->link = newUser;
 		}
-		user->link = newUser;
 	}
 }
 

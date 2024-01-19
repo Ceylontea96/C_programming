@@ -37,7 +37,6 @@ void sign_in() {	// 로그인 (돌아가기면 -1을 리턴)
 	printf("\n========== 로그인 ========== (0. 돌아가기)\n");
 	char *id, *pw;
 	while (1) {
-		
 		printf("ID ");
 		id = getString();
 		if (strcmp(id, "0") == 0) return;
@@ -88,7 +87,6 @@ void delete_account() {
 	}
 }
 
-
 void DBMenu() {
 	printf("\n========== 데이터베이스 쿼리를 입력하세요. ==========\n");
 	// 0.create, 1. show, 2. use, 3. drop, 0. logout
@@ -134,7 +132,6 @@ void DBMenu() {
 	return;
 }
 
-
 void useDb(char* dbName) {
 	database* db = getDbByName(dbName);
 	if (db == NULL) printf("존재하지 않는 데이터베이스입니다.\n");
@@ -150,7 +147,8 @@ void dropDb(char* dbName) {
 	if (getDbByName(dbName) == NULL) printf("존재하지 않는 데이터베이스입니다.\n");
 	else {
 		table* tb = dropDB(dbName);
-		printf("[%s] DB가 삭제되었습니다.\n", dbName);
+		dropAllTb(tb);
+		printf("[%s] 데이터베이스가 삭제되었습니다.\n", dbName);
 	}
 	
 	
@@ -167,31 +165,35 @@ void tableMenu() {
 	sprintf_s(command, MAX, "%s", query);
 
 	switch (checkCommand(command)) {
-	case Create:
+
+	case Create:	//create table tb1(id varchar(100), pwd varchar(100), no int(10));
 	{
-		
+		printf("create!!\n");
 		break;
 	}
-	case Show:
+	case Show:	//show tables;
+		printf("show!!\n");
 		showTables();
 		break;
-	case Use:
+	case Use:	//use database db1;
+		printf("use!!\n");
 		useDb(useParser(query));
 		break;
-	case Drop:
-		
+	case Drop:	//drop table tb1;
+		dropTB(dropParser(query));
+		printf("drop!!\n");
 		break;
-	case Select:
-
+	case Select:	//select * from tb1 where pwd = 'test';
+		printf("select!!\n");
 		break;
-	case Insert:
-
+	case Insert:	//insert into tb1(id, pwd, no) values('user', 'user1234', 1);
+		printf("insert!!\n");
 		break;
-	case Delete:
-
+	case Delete:	//delete from tb1 where no = 1;
+		printf("delete!!\n");
 		break;
-	case Update:
-
+	case Update:	//update tb1 set id='test' where pwd = 'test';
+		printf("update!!\n");
 		break;
 	case Logout:
 		login_user = NULL;
@@ -212,13 +214,18 @@ void tableMenu() {
 void createTb(char* query) {
 	
 
-	tableInfoParser();
+	tableInfoParser(query);
 
 }
 
-
-
-
+void dropTB(char* tbName) {
+	if (getTableByName(tbName) == NULL) printf("존재하지 않는 테이블입니다.\n");
+	else {
+		column* column = dropTable(tbName);
+		dropAllColumn(column);
+		printf("[%s] 테이블이 삭제되었습니다.\n", tbName);
+	}
+}
 
 void dropAllDb(database* db) {
 	database* nextDb = NULL;
@@ -229,7 +236,6 @@ void dropAllDb(database* db) {
 		db = nextDb;
 	}
 }
-
 
 void dropAllTb(table* tb) {
 	table* nextTb = tb;

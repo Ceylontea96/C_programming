@@ -1,6 +1,2 @@
-﻿  main.cpp
-  parsing.cpp
-  process.cpp
-D:\git\c_programming\dbms\dbms\process.cpp(215,2): error C3861: 'tableInfoParser': 식별자를 찾을 수 없습니다.
-  table.cpp
-  코드를 생성하고 있습니다...
+﻿  process.cpp
+  dbms.vcxproj -> C:\Users\SAMSUNG\Desktop\jinho\c_programming\dbms\x64\Debug\dbms.exe

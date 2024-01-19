@@ -32,21 +32,20 @@ bool isDupDb(char* dbName) { // DB 중복 검증 함수(DB 존재 시 true, 아닐시 false�
 
 void createDB(char* dbName) {
 	database* newDB = (database*)malloc(sizeof(database));
-	strcpy_s(newDB->dbname, MAX, dbName);
-	newDB->tlink = NULL;
-	newDB->link = NULL;
-	//login_user->dlink = newDB;
-	
-	if (dbTop == NULL) {
-		dbTop = newDB;
-		//login_user->dlink = dbTop;
-	}
-	else {
-		database* db = dbTop;
-		while (db->link != NULL) {
-			db = db->link;
+	if (newDB != NULL) {
+		strcpy_s(newDB->dbname, MAX, dbName);
+		newDB->tlink = NULL;
+		newDB->link = NULL;
+		if (dbTop == NULL) {
+			dbTop = newDB;
 		}
-		db->link = newDB;
+		else {
+			database* db = dbTop;
+			while (db->link != NULL) {
+				db = db->link;
+			}
+			db->link = newDB;
+		}
 	}
 }
 
@@ -79,16 +78,8 @@ table* dropDB(database* db) {
 }
 
 void useDB(char* dbName) {
-	if (isDupDb(dbName)) {
-		database* db = dbTop;
-		while (db != NULL && db->dbname != NULL) {
-			if (strcmp(dbName, db->dbname) == 0) {
-				using_db = db;
-				break;
-			}
-			db = db->link;
-		}
-	}
+	database* db = getDbByName(dbName);
+	if (db != NULL) using_db = db;
 }
 
 void showDbs() {

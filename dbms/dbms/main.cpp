@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 int main() {
 	while (1) {
 		if (SYSTEM_STATUS == EXIT) exit(0);
