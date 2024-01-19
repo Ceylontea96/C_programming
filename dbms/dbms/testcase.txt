@@ -46,6 +46,8 @@ delete from tb2 where num = 10 or grade != 'bronze';
 
 update tb1 set id='test' where pwd = 'test';
 update tb1 set id = 'test', no = 3 where pwd = 'test' and no = 5;
+
+delete from tb1 where no = 1;
 입력시 사이즈 검증부터
 
 

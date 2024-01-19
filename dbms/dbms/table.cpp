@@ -1,25 +1,11 @@
 #include "table.h"
 
-table* tableTop;
-column* columnTop;
-data* dataTop;
+table* tableTop = NULL;
+table* using_tb = NULL;
+column* columnTop = NULL;
+data* dataTop = NULL;
 
-bool isDupTb(char* tbName) { // DB 중복 검증 함수(DB 존재 시 true, 아닐시 false를 return)
-	bool result = false;
-	if (tableTop->link != NULL) {
-		table* tb = tableTop->link;
-		while (tb != NULL && tb->tbname != NULL) {
-			if (strcmp(tbName, tb->tbname) == 0) {
-				result = true;
-				break;
-			}
-			tb = tb->link;
-		}
-	}
-	return result;
-}
-
-void createTable(char* tbName) {
+table* createTable(char* tbName) {
 	table* newTb = (table*)malloc(sizeof(table));
 	if (newTb != NULL) {
 		strcpy_s(newTb->tbname, MAX, tbName);
@@ -35,6 +21,7 @@ void createTable(char* tbName) {
 			tb->link = newTb;
 		}
 	}
+	return newTb;
 }
 
 column* dropTable(char* tbName) {
@@ -92,6 +79,14 @@ table* getTableByName(char* tbName) {
 	return target_tb;
 }
 
+void createColumn(char* name, char* type, int size) {
+
+}
+
+void selectTable(char* tbName, char* option) {
+
+}
+
 int insertTb() {
 
 
@@ -108,4 +103,27 @@ int deleteTb() {
 
 int selectTb() {
 	return 0;
+}
+
+
+void createColumn(char* name, char* type, char* size) {
+	column* newColumn = (column*)malloc(sizeof(column));
+	if (newColumn != NULL) {
+		strcpy_s(newColumn->field, MAX, name);
+		strcpy_s(newColumn->type, MAX, type);
+		newColumn->size = atoi(size);
+		newColumn->dlink = NULL;
+		newColumn->link = NULL;
+
+		if (columnTop == NULL) columnTop = newColumn;
+		else {
+			column* column = columnTop;
+			while (column->link != NULL) {
+				column = column->link;
+			}
+			column->link = newColumn;
+		}
+	}
+
+
 }

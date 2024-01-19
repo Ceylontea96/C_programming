@@ -1,6 +1,7 @@
 #ifndef _PARSING_
 #define _PARSING_ 
 #include "common.h"
+#include "structs.h"
 
 enum Command {
 	Error = -1,
@@ -17,13 +18,14 @@ enum Command {
 	Exit
 };
 
-int checkCommand(char* query);
+int checkDbCommand(char* query);
 char* createParser(char* query);
 char* useParser(char* query);
 char* dropParser(char* query);
 
+int checkTbCommand(char* query);
 char* tableNameParser(char* query);
-char* tableInfoParser(char* query);
+column* columnInfoParser(char* query);
 
 char* getQuery();
 #endif

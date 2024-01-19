@@ -96,19 +96,10 @@ void DBMenu() {
 	char command[MAX] = { 0 };
 	sprintf_s(command, MAX, "%s", query);
 	
-	switch (checkCommand(command)) {
+	switch (checkDbCommand(command)) {
 	case Create:
 	{
-		char* dbName = createParser(query);
-		database* db = getDbByName(dbName);
-		if (db == NULL) {
-			if (login_user->dlink == NULL) {
-				login_user->dlink = dbTop;
-			}
-			createDB(dbName);
-			printf("[%s] 생성 성공.\n", dbName);
-		}
-		else	printf("중복된 데이터베이스명입니다.\n");
+		createDb(createParser(query));
 		break;
 	}
 	case Show:
@@ -128,8 +119,19 @@ void DBMenu() {
 		printf("잘못된 쿼리입니다.\n");
 		break;
 	}
-	
 	return;
+}
+
+void createDb(char* dbName) {
+	database* db = getDbByName(dbName);
+	if (db == NULL) {
+		createDB(dbName);
+		if (login_user->dlink == NULL) {
+			login_user->dlink = dbTop;
+		}
+		printf("[%s] 생성 성공.\n", dbName);
+	}
+	else	printf("중복된 데이터베이스명입니다.\n");
 }
 
 void useDb(char* dbName) {
@@ -144,15 +146,12 @@ void useDb(char* dbName) {
 }
 
 void dropDb(char* dbName) {
-	if (getDbByName(dbName) == NULL) printf("존재하지 않는 데이터베이스입니다.\n");
+	if (getDbByName(dbName) == NULL) printf("존재하지 않는 데이터베이스입니다[%s].\n", dbName);
 	else {
 		table* tb = dropDB(dbName);
 		dropAllTb(tb);
 		printf("[%s] 데이터베이스가 삭제되었습니다.\n", dbName);
 	}
-	
-	
-	//dropAllTb();
 }
 
 void tableMenu() {
@@ -164,24 +163,19 @@ void tableMenu() {
 	char command[MAX] = { 0 };
 	sprintf_s(command, MAX, "%s", query);
 
-	switch (checkCommand(command)) {
+	switch (checkTbCommand(command)) {
 
 	case Create:	//create table tb1(id varchar(100), pwd varchar(100), no int(10));
-	{
-		printf("create!!\n");
+		tableCreateParser(query);
 		break;
-	}
 	case Show:	//show tables;
-		printf("show!!\n");
 		showTables();
 		break;
 	case Use:	//use database db1;
-		printf("use!!\n");
 		useDb(useParser(query));
 		break;
 	case Drop:	//drop table tb1;
-		dropTB(dropParser(query));
-		printf("drop!!\n");
+		dropTB(tableNameParser(query));
 		break;
 	case Select:	//select * from tb1 where pwd = 'test';
 		printf("select!!\n");
@@ -204,22 +198,76 @@ void tableMenu() {
 		printf("잘못된 쿼리입니다.\n");
 		break;
 	}
-
 	return;
 }
 
+void tableCreateParser(char* query) {					//create table tb1(id varchar(100), pwd varchar(100), no int(10));	
+	int result = 0;
+	char* context = NULL;
+	char* cmd = strtok_s(query, " ", &context);			//cmd[create] context[table tb1(id varchar(100), pwd varchar(100), no int(10))]
+	if (_strcmpi(cmd, "create") == 0) {
+		cmd = strtok_s(NULL, " ", &context);			//cmd[table] context[tb1(id varchar(100), pwd varchar(100), no int(10))]
+		cmd = strtok_s(NULL, "(", &context);			//cmd[tb1] context[id varchar(100), pwd varchar(100), no int(10))]
+		if (getTableByName(cmd) != NULL) {
+			printf("이미 존재하는 테이블\n");
+			result = -1;
+		}
+		else {
+			table* tb = createTable(cmd);
+			using_tb = tb;
 
+			cmd = strtok_s(NULL, ",", &context);		//cmd[id varchar(100)] context[ pwd varchar(100), no int(10))]
+			while (cmd != NULL) {
+				char* name = NULL, * type = NULL, * size = NULL, * temp;
+				char* last = context;
 
+				name = strtok_s(cmd, " ", &temp);
+				type = strtok_s(NULL, "(", &temp);
+				size = strtok_s(NULL, " ", &temp);
+				if (name == NULL || type == NULL || size == NULL) {
+					//printf("파싱 실패\n");
+					result = -1;
+					break;
+				}
+				//printf("컬럼 생성[%s][%s][%s]\n", name, type, size);
+				createColumn(name, type, size);
 
-void createTb(char* query) {
-	
+				last = context;
+				cmd = strtok_s(last, ",", &context);		//cmd[id varchar(100)] context[ pwd varchar(100), no int(10))]
+			}
 
-	tableInfoParser(query);
+			if (result == -1) {
+				printf("테이블 생성 실패!\n");
+				dropTable(tb);
+			}
+			else {
+				printf("테이블 생성 성공![%s]\n", tb->tbname);
+			}
+		}
+	}
+}
 
+void tableSelectParser(char* query) {	//select id,pwd from tb1;
+	int result = -1;
+	char* context = NULL;
+	char* cmd = strtok_s(query, " ", &context);			//cmd[select] context[id,pwd from tb1]
+	char *target = NULL, *tbName;
+	if (_strcmpi(cmd, "select") == 0) {
+		target = strtok_s(NULL, " ", &context);			//target[*] context[from tb1]
+		cmd = strtok_s(NULL, " ", &context);			//cmd[from] context[tb1]
+		if (_strcmpi(cmd, "from") == 0) {
+			tbName = strtok_s(NULL, " ", &context);		//tbName[tb1] context[]
+			if (tbName != NULL && (context == NULL || context[0] == '\0')) {
+				selectTable(tbName, target);
+				result = 0;
+			}
+		}
+	}
+	if (result == -1) printf("SELECT 실패\n");
 }
 
 void dropTB(char* tbName) {
-	if (getTableByName(tbName) == NULL) printf("존재하지 않는 테이블입니다.\n");
+	if (getTableByName(tbName) == NULL) printf("존재하지 않는 테이블입니다[%s].\n", tbName);
 	else {
 		column* column = dropTable(tbName);
 		dropAllColumn(column);

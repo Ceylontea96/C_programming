@@ -21,12 +21,15 @@ void sign_in();
 void delete_account();
 void DBMenu();
 
+void createDb(char* dbName);
 void useDb(char* dbName);
 void dropDb(char* dbName);
 
 void tableMenu();
 
-void createTb();
+void tableCreateParser(char* query);
+void tableSelectParser(char* query);
+void dropTB(char* tbName);
 
 
 void dropAllDb(database* db);

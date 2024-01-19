@@ -1,7 +1,7 @@
 #include "parsing.h"
 
 
-int checkCommand(char* query) {
+int checkDbCommand(char* query) {
 	int result = Error;
 	if (_strcmpi(query, "logout") == 0) return Logout;
 
@@ -15,14 +15,10 @@ int checkCommand(char* query) {
 				result = Create;
 			}
 		}
-		else if (_strcmpi(cmd, "table") == 0) {
-			cmd = strtok_s(NULL, "(", &context);
-			printf("(Table Query) cmd:[%s], context:[%s]\n", cmd, context);
-		}
 	}
 	else if (_strcmpi(cmd, "show") == 0) {	//
 		cmd = strtok_s(NULL, " ", &context);	// database name
-		if ((_strcmpi(cmd, "databases") == 0 || _strcmpi(cmd, "tables") == 0)&& (context == NULL || context[0] == '\0')) result = Show;
+		if (_strcmpi(cmd, "databases") == 0 && (context == NULL || context[0] == '\0')) result = Show;
 	}
 	else if (_strcmpi(cmd, "use") == 0) {
 		cmd = strtok_s(NULL, " ", &context);
@@ -33,22 +29,10 @@ int checkCommand(char* query) {
 	}
 	else if (_strcmpi(cmd, "drop") == 0) {
 		cmd = strtok_s(NULL, " ", &context);
-		if (_strcmpi(cmd, "database") == 0 || _strcmpi(cmd, "table") == 0) {
+		if (_strcmpi(cmd, "database") == 0) {
 			cmd = strtok_s(NULL, " ", &context);	// database name
 			if (cmd != NULL && (context == NULL || context[0] == '\0')) result = Drop;
 		}	
-	}
-	else if (_strcmpi(cmd, "select") == 0) {
-	
-	}
-	else if (_strcmpi(cmd, "insert") == 0) {
-
-	}
-	else if (_strcmpi(cmd, "update") == 0) {
-
-	}
-	else if (_strcmpi(cmd, "delete") == 0) {
-
 	}
 	return result;
 }
@@ -103,6 +87,64 @@ char* dropParser(char* query) {
 		}
 	}
 	return NULL;
+}
+
+int checkTbCommand(char* query) {
+	int result = Error;
+	if (_strcmpi(query, "logout") == 0) return Logout;
+
+	char* context = NULL;
+	char* cmd = strtok_s(query, " ", &context);
+	if (_strcmpi(cmd, "create") == 0) {
+		cmd = strtok_s(NULL, " ", &context);
+		if (_strcmpi(cmd, "table") == 0) {
+			cmd = strtok_s(NULL, "(", &context);
+			printf("(Table Query) cmd:[%s], context:[%s]\n", cmd, context);
+			return Create;
+		}
+	}
+	else if (_strcmpi(cmd, "show") == 0) {	//
+		cmd = strtok_s(NULL, " ", &context);	// database name
+		if (_strcmpi(cmd, "tables") == 0 && (context == NULL || context[0] == '\0')) result = Show;
+	}
+	else if (_strcmpi(cmd, "use") == 0) {
+		cmd = strtok_s(NULL, " ", &context);
+		if (_strcmpi(cmd, "database") == 0) {
+			cmd = strtok_s(NULL, " ", &context);	// database name
+			if (cmd != NULL && (context == NULL || context[0] == '\0')) result = Use;
+		}
+	}
+	else if (_strcmpi(cmd, "drop") == 0) {
+		cmd = strtok_s(NULL, " ", &context);
+		if (_strcmpi(cmd, "table") == 0) {
+			cmd = strtok_s(NULL, " ", &context);	// database name
+			if (cmd != NULL && (context == NULL || context[0] == '\0')) result = Drop;
+		}
+	}
+	else if (_strcmpi(cmd, "select") == 0) {
+		cmd = strtok_s(NULL, " ", &context);	// [*][from tb1 ~]
+		cmd = strtok_s(NULL, " ", &context);	// [from] [tb1~]
+		if (_strcmpi(cmd, "from") == 0) {
+			cmd = strtok_s(NULL, " ", &context);	// [tb1] [~~~]
+			if (cmd != NULL) result = Select;
+		}
+	}
+	else if (_strcmpi(cmd, "insert") == 0) {
+		cmd = strtok_s(NULL, " ", &context);	// [into] [tb1(~~~)]
+		if (_strcmpi(cmd, "into") == 0) {
+			cmd = strtok_s(NULL, "(", &context);	// [tb1] [~~~]
+			if (cmd != NULL) result = Insert;
+		}
+	}
+	else if (_strcmpi(cmd, "update") == 0) {
+		cmd = strtok_s(NULL, " ", &context);	// [tb1] [set id = 'test', no = 3]
+		cmd = strtok_s(NULL, " ", &context);	// [set] [id = 'test', no = 3]
+		if (_strcmpi(cmd, "set") == 0 && context != NULL) result = Update;
+	}
+	else if (_strcmpi(cmd, "delete") == 0) {
+
+	}
+	return result;
 }
 
 char* tableNameParser(char* query) {	// 쿼리문에서 테이블명만 리턴해주는 함수
@@ -167,11 +209,18 @@ char* tableNameParser(char* query) {	// 쿼리문에서 테이블명만 리턴해주는 함수
 	return tbName;
 }
 
-char* tableInfoParser(char* query) {
+column* columnInfoParser(char* query) {
+	column* newColumn = (column*)malloc(sizeof(column));
+	if (newColumn != NULL) {
 
 
-	return NULL;
+	}
+
+	return newColumn;
 }
+
+
+
 
 
 

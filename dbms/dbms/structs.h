@@ -39,6 +39,7 @@ typedef struct data {
 
 //extern user* login_user;
 extern database* using_db;
+extern table* using_tb;
 
 
 
