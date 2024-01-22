@@ -28,6 +28,8 @@ void dropDb(char* dbName);
 void tableMenu();
 
 void tableCreateParser(char* query);
+void tableInsertParser(char* query);
+void InsertParser(char* target, char* values);
 void tableSelectParser(char* query);
 void dropTB(char* tbName);
 
@@ -35,6 +37,6 @@ void dropTB(char* tbName);
 void dropAllDb(database* db);
 void dropAllTb(table* table);
 void dropAllColumn(column* col);
-void dropAllData(data* data);
+void dropAllData(data* dt);
 
 #endif

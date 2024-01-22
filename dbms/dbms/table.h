@@ -12,10 +12,16 @@ column* dropTable(char* tbName);
 column* dropTable(table* tb);
 void showTables();
 table* getTableByName(char* tbName);
-void createColumn(char* name, char* type, int size);
 void selectTable(char* tbName, char* option);
 
-void createColumn(char* name, char* type, char* size);
+column* getColumnByName(char* ColumnName);
+column* createColumn(char* name, char* type, int size);
 
 
+data* dropColumn(column* Column);
+
+data* createData(char* value);
+
+
+void dropData(data* dt);
 #endif

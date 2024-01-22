@@ -25,14 +25,13 @@ table* createTable(char* tbName) {
 }
 
 column* dropTable(char* tbName) {
-	table* preTb = tableTop;
+	table* preTb = NULL;
 	table* tb = tableTop;
 	column* comlumn = NULL;
 	while (tb != NULL) {
 		if (strcmp(tbName, tb->tbname) == 0) {
-			if (preTb == tableTop) {
-				tableTop = tb->link;
-			}
+			if (preTb == NULL) tableTop = tb->link;
+			else				preTb->link = tb->link;
 			comlumn = tb->clink;
 			free(tb);
 			break;
@@ -79,11 +78,48 @@ table* getTableByName(char* tbName) {
 	return target_tb;
 }
 
-void createColumn(char* name, char* type, int size) {
-
-}
-
 void selectTable(char* tbName, char* option) {
+	printf("================= SELECT %s =================\n", tbName);
+	table* tb = getTableByName(tbName);
+	int i = 0, j = 0;
+	column* cl = tableTop->clink;
+	data* dt = cl->dlink;
+	
+	if (cl != NULL) {
+		
+		while (cl != NULL) {
+			printf("%s ", cl->field);
+			cl = cl->link;
+		}
+		printf("\n");
+		printf("--------------------------------------------\n");
+		cl = columnTop->link;
+		while (dt != NULL) {
+			cl = cl->link;
+			while (cl != NULL) {
+
+				dt = cl->dlink;
+				i = 0;
+				while (i < j) {
+					dt = dt->link;
+					++i;
+				}
+				if (dt == NULL)
+					break;
+
+				printf("%s\t", dt->data);
+				cl = cl->link;
+			}
+			printf("\n");
+			++j;
+			if (dt->link == NULL)
+				break;
+		}
+		printf("--------------------------------------------\n");
+	}
+	
+
+	printf("===============================================\n");
 
 }
 
@@ -105,13 +141,25 @@ int selectTb() {
 	return 0;
 }
 
+column* getColumnByName(char* ColumnName) {
+	column* target_cl = NULL;
+	if (columnTop != NULL) {
+		column* cl = columnTop;
+		while (cl != NULL && cl->field != NULL) {
+			if (strcmp(ColumnName, cl->field) == 0) target_cl = cl;
+			cl = cl->link;
+		}
+	}
+	return target_cl;
+}
 
-void createColumn(char* name, char* type, char* size) {
+
+column* createColumn(char* name, char* type, int size) {
 	column* newColumn = (column*)malloc(sizeof(column));
 	if (newColumn != NULL) {
 		strcpy_s(newColumn->field, MAX, name);
 		strcpy_s(newColumn->type, MAX, type);
-		newColumn->size = atoi(size);
+		newColumn->size = size;
 		newColumn->dlink = NULL;
 		newColumn->link = NULL;
 
@@ -124,6 +172,48 @@ void createColumn(char* name, char* type, char* size) {
 			column->link = newColumn;
 		}
 	}
+	return newColumn;
+
+}
 
 
+data* dropColumn(column* Column) {
+	column* nowCl = columnTop;
+	column* nextCl = Column->link;
+	data* dt = Column->dlink;
+	free(nowCl);
+	columnTop = nextCl;
+	return dt;
+}
+
+
+
+
+
+data* createData(char* value) {
+	data* newData = (data*)malloc(sizeof(data));
+	if (newData != NULL) {
+		strcpy_s(newData->data, MAX, value);
+		newData->link = NULL;
+
+		if (dataTop == NULL) dataTop = newData;
+		else {
+			data* data = dataTop;
+			while (data->link != NULL) {
+				data = data->link;
+			}
+			data->link = newData;
+ 		}
+	}
+
+	return newData;
+}
+
+
+
+void dropData(data* dt) {
+	data* nowDt = dataTop;
+	data* nextDt = dt->link;
+	free(nowDt);
+	dataTop = nextDt;
 }

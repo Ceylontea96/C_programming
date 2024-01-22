@@ -99,7 +99,6 @@ int checkTbCommand(char* query) {
 		cmd = strtok_s(NULL, " ", &context);
 		if (_strcmpi(cmd, "table") == 0) {
 			cmd = strtok_s(NULL, "(", &context);
-			printf("(Table Query) cmd:[%s], context:[%s]\n", cmd, context);
 			return Create;
 		}
 	}

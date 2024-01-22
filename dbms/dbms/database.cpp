@@ -50,14 +50,13 @@ void createDB(char* dbName) {
 }
 
 table* dropDB(char* dbName) {
-	database* preDb = dbTop;
+	database* preDb = NULL;
 	database* db = dbTop;
 	table* tb = NULL;
 	while (db != NULL) {
 		if (strcmp(dbName, db->dbname) == 0) {
-			if (preDb == dbTop) {
-				dbTop = db->link;
-			}
+			if (preDb == NULL) dbTop = db->link;
+			else				preDb->link = db->link;
 			tb = db->tlink;
 			free(db);
 			break;

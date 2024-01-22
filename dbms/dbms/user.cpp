@@ -66,12 +66,9 @@ database* delete_user(char* id) {
 	database* db = NULL;
 	while (user != NULL) {
 		if (strcmp(id, user->username) == 0) {
-			if (preUser == NULL) {
-				userTop = user->link;
-			}
-			else {
-				preUser->link = user->link;
-			}
+			if (preUser == NULL)	userTop = user->link;
+			else					preUser->link = user->link;
+			
 			db = user->dlink;
 			free(user);
 			break;

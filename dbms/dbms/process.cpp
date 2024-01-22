@@ -179,9 +179,11 @@ void tableMenu() {
 		break;
 	case Select:	//select * from tb1 where pwd = 'test';
 		printf("select!!\n");
+		tableSelectParser(query);
 		break;
 	case Insert:	//insert into tb1(id, pwd, no) values('user', 'user1234', 1);
 		printf("insert!!\n");
+		tableInsertParser(query);
 		break;
 	case Delete:	//delete from tb1 where no = 1;
 		printf("delete!!\n");
@@ -208,30 +210,34 @@ void tableCreateParser(char* query) {					//create table tb1(id varchar(100), pw
 	if (_strcmpi(cmd, "create") == 0) {
 		cmd = strtok_s(NULL, " ", &context);			//cmd[table] context[tb1(id varchar(100), pwd varchar(100), no int(10))]
 		cmd = strtok_s(NULL, "(", &context);			//cmd[tb1] context[id varchar(100), pwd varchar(100), no int(10))]
+
 		if (getTableByName(cmd) != NULL) {
 			printf("이미 존재하는 테이블\n");
 			result = -1;
 		}
 		else {
 			table* tb = createTable(cmd);
-			using_tb = tb;
+			//using_tb = tb;
+			if (using_db->tlink == NULL) using_db->tlink = tableTop;
 
 			cmd = strtok_s(NULL, ",", &context);		//cmd[id varchar(100)] context[ pwd varchar(100), no int(10))]
 			while (cmd != NULL) {
-				char* name = NULL, * type = NULL, * size = NULL, * temp;
+				char* name = NULL, * type = NULL, * temp = NULL;
 				char* last = context;
+				int size = 0;
 
 				name = strtok_s(cmd, " ", &temp);
 				type = strtok_s(NULL, "(", &temp);
-				size = strtok_s(NULL, " ", &temp);
+				size = atoi(strtok_s(NULL, " ", &temp));
 				if (name == NULL || type == NULL || size == NULL) {
 					//printf("파싱 실패\n");
 					result = -1;
 					break;
 				}
-				//printf("컬럼 생성[%s][%s][%s]\n", name, type, size);
-				createColumn(name, type, size);
-
+				//printf("컬럼 생성[%s][%s][%d]\n", name, type, size);
+				columnTop = tb->clink;
+				column* cl = createColumn(name, type, size);
+				if (tb->clink == NULL) tb->clink = columnTop;
 				last = context;
 				cmd = strtok_s(last, ",", &context);		//cmd[id varchar(100)] context[ pwd varchar(100), no int(10))]
 			}
@@ -242,9 +248,79 @@ void tableCreateParser(char* query) {					//create table tb1(id varchar(100), pw
 			}
 			else {
 				printf("테이블 생성 성공![%s]\n", tb->tbname);
+
 			}
 		}
 	}
+}
+
+void tableInsertParser(char* query) {
+	int result = -1;
+	char* context = NULL;
+	char* cmd = strtok_s(query, " ", &context);			//cmd[insert] context[into tb1(id, pwd, no) values('user', 'user1234', 1);]
+	if (_strcmpi(cmd, "insert") == 0) {
+		cmd = strtok_s(NULL, " ", &context);				//cmd[into] context[tb1(id, pwd, no) values('user', 'user1234', 1);]
+		
+		if (_strcmpi(cmd, "into") == 0) {
+			char* targets = NULL, * tbName = NULL, * values = NULL;
+			tbName = strtok_s(NULL, "(", &context);				//cmd[tb1] context[id, pwd, no) values('user', 'user1234', 1);]
+			table* tb = getTableByName(tbName);
+			if (tb != NULL) {
+				targets = strtok_s(NULL, ")", &context);				//cmd[id, pwd, no] context[ values('user', 'user1234', 1);]
+				//반복문으로 타겟 모두 검증
+
+
+				cmd = strtok_s(NULL, "(", &context);				//cmd[ values] context['user', 'user1234', 1);]
+				if (_strcmpi(cmd, " values") == 0) {
+					values = strtok_s(NULL, ")", &context);				//cmd['user', 'user1234', 1] context[]
+					printf("targets[%s], values[%s]\n", targets, values);
+					InsertParser(targets, values);
+					result = 0;
+
+
+
+				}
+				else printf("value 테스트 에러[%s], [%s]\n", cmd, "values");
+				
+				
+			}
+			else printf("22222222222\n");
+			
+
+
+			
+		}
+		else printf("11111111\n");
+	}
+	if (result == -1) printf("잘못된 쿼리입니다.\n");
+	
+}
+
+void InsertParser(char* targets, char* values) { //cmd[id, pwd, no] context['user', 'user1234', 1]
+	int index = 0;
+	char* context1 = NULL, *context2 = NULL, *target = NULL, *value = NULL;
+	//printf("insertParser[%d] : target[%s], value[%s]\n", index, targets, values);
+
+	target = strtok_s(targets, ",", &context1);
+	value = strtok_s(values, ",", &context2);
+	
+	while (target != NULL && value != NULL) {
+		//printf("insertParser[%d] : target[%s][%s], value[%s][%s]\n", index, targets, context1, values, context2);
+		
+		target = strtok_s(NULL, ",", &context1);
+		value = strtok_s(NULL, ",", &context2);
+		if (target == NULL || value == NULL) break;
+
+		target = trim(target);
+		value = trim(value);
+		column* cl = getColumnByName(target);
+		dataTop = cl->dlink;
+		createData(value);
+
+		targets = context1;
+		values = context2;
+	}
+	
 }
 
 void tableSelectParser(char* query) {	//select id,pwd from tb1;
@@ -280,7 +356,7 @@ void dropAllDb(database* db) {
 	while (db != NULL) {
 		nextDb = db->link;
 		dropAllTb(db->tlink);
-		free(db);
+		dropDB(db);
 		db = nextDb;
 	}
 }
@@ -300,18 +376,16 @@ void dropAllColumn(column* col) {
 	while (col != NULL) {
 		nextCol = col->link;
 		dropAllData(col->dlink);
-		free(col);
+		dropColumn(col);
 		col = nextCol;
 	}
 }
 
-void dropAllData(data* data) {
-	/*
-	data* dt = NULL;
-	while (data != NULL) {
-		dt = data->link;
-		free(data);
-		data = dt;
+void dropAllData(data* dt) {
+	data* nextData = NULL;
+	while (dt != NULL) {
+		nextData = dt->link;
+		dropData(dt);
+		dt = nextData;
 	}
-	*/
 }
