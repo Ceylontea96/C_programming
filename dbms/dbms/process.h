@@ -29,7 +29,7 @@ void tableMenu();
 
 void tableCreateParser(char* query);
 void tableInsertParser(char* query);
-void InsertParser(char* target, char* values);
+int InsertParser(table* tb, char* target, char* values);
 void tableSelectParser(char* query);
 void dropTB(char* tbName);
 

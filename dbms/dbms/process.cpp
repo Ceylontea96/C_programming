@@ -265,6 +265,7 @@ void tableInsertParser(char* query) {
 			char* targets = NULL, * tbName = NULL, * values = NULL;
 			tbName = strtok_s(NULL, "(", &context);				//cmd[tb1] context[id, pwd, no) values('user', 'user1234', 1);]
 			table* tb = getTableByName(tbName);
+			//columnTop = tb->clink;
 			if (tb != NULL) {
 				targets = strtok_s(NULL, ")", &context);				//cmd[id, pwd, no] context[ values('user', 'user1234', 1);]
 				//반복문으로 타겟 모두 검증
@@ -274,53 +275,63 @@ void tableInsertParser(char* query) {
 				if (_strcmpi(cmd, " values") == 0) {
 					values = strtok_s(NULL, ")", &context);				//cmd['user', 'user1234', 1] context[]
 					printf("targets[%s], values[%s]\n", targets, values);
-					InsertParser(targets, values);
-					result = 0;
-
-
-
+					result = InsertParser(tb, targets, values);
+					
 				}
 				else printf("value 테스트 에러[%s], [%s]\n", cmd, "values");
-				
-				
 			}
 			else printf("22222222222\n");
-			
-
-
-			
 		}
 		else printf("11111111\n");
 	}
+	if (result < 0) printf("error %d\n", result);
 	if (result == -1) printf("잘못된 쿼리입니다.\n");
-	
 }
 
-void InsertParser(char* targets, char* values) { //cmd[id, pwd, no] context['user', 'user1234', 1]
+int InsertParser(table* tb, char* targets, char* values) { //targets[id, pwd, no] values['user', 'user1234', 1]
 	int index = 0;
 	char* context1 = NULL, *context2 = NULL, *target = NULL, *value = NULL;
-	//printf("insertParser[%d] : target[%s], value[%s]\n", index, targets, values);
+	targets = trim(targets);
+	values = trim(values);
+	char* column_dummy[100] = { 0 };
+	column* cl = tb->clink;
+	int i = 0;
+	while (cl != NULL) {
+		strcpy_s(column_dummy[i++], MAX, cl->field);
+		cl = cl->link;
+	}
 
 	target = strtok_s(targets, ",", &context1);
 	value = strtok_s(values, ",", &context2);
-	
+	//target = strtok_s(NULL, ",", &context1);
+	//value = strtok_s(NULL, ",", &context2);
 	while (target != NULL && value != NULL) {
-		//printf("insertParser[%d] : target[%s][%s], value[%s][%s]\n", index, targets, context1, values, context2);
-		
-		target = strtok_s(NULL, ",", &context1);
-		value = strtok_s(NULL, ",", &context2);
-		if (target == NULL || value == NULL) break;
 
-		target = trim(target);
-		value = trim(value);
-		column* cl = getColumnByName(target);
-		dataTop = cl->dlink;
-		createData(value);
+		int flag = 0;
+		column* cl = tb->clink;
+		while (cl != NULL) {
+			if (_strcmpi(cl->field, trim(target)) == 0) {
+				flag = 1;
+				int re = createData(cl, trim(value));
+				if (re < 0) return re;
+			}
+
+			cl = cl->link;
+		}
+
+		if (flag == 0) {
+			int re = createData(getColumnByName(tb, trim(target)), trim(value));
+		}
+
+		
+		
 
 		targets = context1;
 		values = context2;
+		target = strtok_s(targets, ",", &context1);
+		value = strtok_s(values, ",", &context2);
 	}
-	
+	return 1;
 }
 
 void tableSelectParser(char* query) {	//select id,pwd from tb1;

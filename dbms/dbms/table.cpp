@@ -71,7 +71,10 @@ table* getTableByName(char* tbName) {
 	if (tableTop != NULL) {
 		table* tb = tableTop;
 		while (tb != NULL && tb->tbname != NULL) {
-			if (strcmp(tbName, tb->tbname) == 0) target_tb = tb;
+			if (strcmp(tbName, tb->tbname) == 0) {
+				target_tb = tb;
+				break;
+			}
 			tb = tb->link;
 		}
 	}
@@ -79,25 +82,27 @@ table* getTableByName(char* tbName) {
 }
 
 void selectTable(char* tbName, char* option) {
-	printf("================= SELECT %s =================\n", tbName);
+	
 	table* tb = getTableByName(tbName);
 	int i = 0, j = 0;
-	column* cl = tableTop->clink;
-	data* dt = cl->dlink;
 	
-	if (cl != NULL) {
-		
+	
+	if (tb != NULL) {
+		columnTop = tb->clink;
+		column* cl = columnTop;
+		data* dt = cl->dlink;
+		printf("================= SELECT %s =================\n", tbName);
 		while (cl != NULL) {
 			printf("%s ", cl->field);
 			cl = cl->link;
 		}
 		printf("\n");
-		printf("--------------------------------------------\n");
-		cl = columnTop->link;
-		while (dt != NULL) {
-			cl = cl->link;
-			while (cl != NULL) {
+		//printf("--------------------------------------------\n");
 
+		cl = columnTop;
+		while (1) {
+			cl = columnTop;
+			while (cl != NULL) {
 				dt = cl->dlink;
 				i = 0;
 				while (i < j) {
@@ -112,14 +117,16 @@ void selectTable(char* tbName, char* option) {
 			}
 			printf("\n");
 			++j;
-			if (dt->link == NULL)
+			if (dt == NULL)
 				break;
 		}
-		printf("--------------------------------------------\n");
+		//printf("--------------------------------------------\n");
+		printf("===============================================\n");
 	}
+	else printf("존재하지 않는 테이블입니다[%s]\n", tbName);
 	
 
-	printf("===============================================\n");
+	
 
 }
 
@@ -141,16 +148,17 @@ int selectTb() {
 	return 0;
 }
 
-column* getColumnByName(char* ColumnName) {
-	column* target_cl = NULL;
-	if (columnTop != NULL) {
-		column* cl = columnTop;
-		while (cl != NULL && cl->field != NULL) {
-			if (strcmp(ColumnName, cl->field) == 0) target_cl = cl;
-			cl = cl->link;
+column* getColumnByName(table* tb, char* ColumnName) {
+	if (tb == NULL) return NULL;
+	column* cl = tb->clink;
+	while (cl != NULL) {
+		if (strcmp(ColumnName, cl->field) == 0) {
+			return cl;
 		}
+		cl = cl->link;
 	}
-	return target_cl;
+	
+	return NULL;
 }
 
 
@@ -190,23 +198,25 @@ data* dropColumn(column* Column) {
 
 
 
-data* createData(char* value) {
+int createData(column* cl, char* value) {
+	if (cl == NULL) return -1;
 	data* newData = (data*)malloc(sizeof(data));
 	if (newData != NULL) {
 		strcpy_s(newData->data, MAX, value);
 		newData->link = NULL;
 
-		if (dataTop == NULL) dataTop = newData;
+		if (cl->dlink == NULL) cl->dlink = newData;
 		else {
-			data* data = dataTop;
+			data* data = cl->dlink;
 			while (data->link != NULL) {
 				data = data->link;
 			}
 			data->link = newData;
- 		}
+		}
 	}
+	else return -2;
 
-	return newData;
+	return 1;
 }
 
 

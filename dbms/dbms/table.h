@@ -14,13 +14,13 @@ void showTables();
 table* getTableByName(char* tbName);
 void selectTable(char* tbName, char* option);
 
-column* getColumnByName(char* ColumnName);
+column* getColumnByName(table* tb, char* ColumnName);
 column* createColumn(char* name, char* type, int size);
 
 
 data* dropColumn(column* Column);
 
-data* createData(char* value);
+int createData(column* cl, char* value);
 
 
 void dropData(data* dt);
