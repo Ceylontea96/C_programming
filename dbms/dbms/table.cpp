@@ -141,8 +141,40 @@ int deleteTb(char* tbName, char* options) {
 	column* cl = tb->clink;
 	int checkIdx = 0; 
 	if (options != NULL) {
-		char* context = NULL;
-		char* cmd = strtok_s(options, " ", &context);
+		// no = 1 and pwd = 'sfd.34';
+		char *cmd = NULL, *context = NULL;
+		for (int i = 0; i < 3; ++i) {
+			
+			
+		}
+		int i = 1;
+		char *col = NULL, *oper = NULL, *value = NULL;
+		do {
+			if (i == 1) cmd = strtok_s(options, " ", &context);
+			else		cmd = strtok_s(NULL, " ", &context);
+			
+			if (i % 4 == 1)			col = cmd;
+			else if (i % 4 == 2)	oper = cmd;
+			else if (i % 4 == 3)	value = cmd;
+			else if (i % 4 == 0) {
+				// 돌면서 check 올려주는 함수 추가하기
+
+
+				if (cmd != NULL && context != NULL) {
+					if (_strcmpi(cmd, "and") == 0) ++checkIdx;
+				}
+			}
+
+			++i;
+		} while (cmd != NULL);
+		//cmd[no] context[= 1 and pwd = 'sfd.34'] index 1
+		//cmd[=] context[1 and pwd = 'sfd.34'] index 2
+		//cmd[1] context[and pwd = 'sfd.34'] index 3
+		//cmd[and] context[pwd = 'sfd.34'] index 4
+		//cmd[pwd] context[= 'sfd.34'] index 5
+		//cmd[=] context['sfd.34'] index 6
+		//cmd['sfd.34'] context[] index 7
+
 
 	}
 	
