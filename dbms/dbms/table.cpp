@@ -81,23 +81,30 @@ table* getTableByName(char* tbName) {
 	return target_tb;
 }
 
-void selectTable(char* tbName, char* option) {
-	
+void selectTable(char* tbName, char* targets, char* options) {
 	table* tb = getTableByName(tbName);
 	int i = 0, j = 0;
-	
 	
 	if (tb != NULL) {
 		columnTop = tb->clink;
 		column* cl = columnTop;
 		data* dt = cl->dlink;
 		printf("================= SELECT %s =================\n", tbName);
-		while (cl != NULL) {
-			printf("%s ", cl->field);
-			cl = cl->link;
+		if (strcmp(targets, "*") == 0) {
+			while (cl != NULL) {
+				printf("%s\t", cl->field);
+				cl = cl->link;
+			}
 		}
+		else {
+			char* targetArr[10] = { 0, };
+			while (cl != NULL) {
+				printf("%s\t", cl->field);
+				cl = cl->link;
+			}
+		}
+		
 		printf("\n");
-		//printf("--------------------------------------------\n");
 
 		cl = columnTop;
 		while (1) {
@@ -120,31 +127,39 @@ void selectTable(char* tbName, char* option) {
 			if (dt == NULL)
 				break;
 		}
-		//printf("--------------------------------------------\n");
 		printf("===============================================\n");
 	}
 	else printf("존재하지 않는 테이블입니다[%s]\n", tbName);
-	
-
-	
-
-}
-
-int insertTb() {
-
-
-	return 0;
 }
 
 int updateTb() {
 	return 0;
 }
 
-int deleteTb() {
-	return 0;
-}
+int deleteTb(char* tbName, char* options) {
+	table* tb = getTableByName(tbName);
+	column* cl = tb->clink;
+	int checkIdx = 0; 
+	if (options != NULL) {
+		char* context = NULL;
+		char* cmd = strtok_s(options, " ", &context);
 
-int selectTb() {
+	}
+	
+
+
+	while (cl != NULL) {
+		data* dt = cl->dlink;
+		while (dt != NULL) {
+			data* temp = dt->link;
+			if (dt->check == checkIdx) dropData(cl, dt);
+			dt = temp;
+		}
+		cl = cl->link;
+	}
+
+
+	resetDataCheck(tb);
 	return 0;
 }
 
@@ -185,7 +200,7 @@ column* createColumn(char* name, char* type, int size) {
 }
 
 
-data* dropColumn(column* Column) {
+data* dropColumn(table* tb, column* Column) {
 	column* nowCl = columnTop;
 	column* nextCl = Column->link;
 	data* dt = Column->dlink;
@@ -194,23 +209,27 @@ data* dropColumn(column* Column) {
 	return dt;
 }
 
-
-
-
-
 int createData(column* cl, char* value) {
 	if (cl == NULL) return -1;
+	int index = 0;
 	data* newData = (data*)malloc(sizeof(data));
 	if (newData != NULL) {
-		strcpy_s(newData->data, MAX, value);
+		if (value == NULL)	strcpy_s(newData->data, MAX, "NULL");
+		else				strcpy_s(newData->data, MAX, value);
 		newData->link = NULL;
 
-		if (cl->dlink == NULL) cl->dlink = newData;
+		if (cl->dlink == NULL) {
+			newData->index = 0;
+			cl->dlink = newData;
+		}
 		else {
+			++index;
 			data* data = cl->dlink;
 			while (data->link != NULL) {
 				data = data->link;
+				++index;
 			}
+			newData->index = index;
 			data->link = newData;
 		}
 	}
@@ -220,10 +239,44 @@ int createData(column* cl, char* value) {
 }
 
 
+void dropData(column* cl, data* target_data) {
+	data* preData = NULL;
+	data* data = cl->dlink;
+	while (data != NULL) {
+		if (data == target_data) {
+			if (preData == NULL)	cl->dlink = data->link;
+			else					preData->link = data->link;
+			free(data);
+			break;
+		}
+		preData = data;
+		data = data->link;
+	}
+}
 
-void dropData(data* dt) {
-	data* nowDt = dataTop;
-	data* nextDt = dt->link;
-	free(nowDt);
-	dataTop = nextDt;
+void resetDataCheck(table* tb) {
+	column* cl = tb->clink;
+	while (cl != NULL) {
+		data* dt = cl->dlink;
+		while (dt != NULL) {
+			dt->check = 0;
+			dt = dt->link;
+		}
+		cl = cl->link;
+	}
+}
+
+int getNumberOfDatas(column* cl) {
+	int index = 0;
+	data* dt = cl->dlink;
+	while (dt != NULL) {
+		++index;
+		dt = dt->link;
+	}
+	return index;
+}
+
+void getTarget(char* targets, char** arr) { // 조건을 parsing하는 함수
+	
+	
 }

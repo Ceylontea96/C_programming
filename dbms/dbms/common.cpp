@@ -1,18 +1,14 @@
 #include "common.h"
 
-char* getString() {
-	char temp[1000] = { '\0', };
-	char ch;
+
+void getString(char* str) {
+	char ch = 0;
 	int index = 0;
 	printf("ют╥б >>> ");
 	do {
 		ch = getchar();
-		if (ch != '\n') temp[index++] = ch;
+		if (ch != '\n') str[index++] = ch;
 	} while (ch != '\n');
-
-	char* query = (char*)malloc(sizeof(char) * index);
-	strncpy_s(query, index+1, temp, index);
-	return query;
 }
 
 char* trim_left(char* str) {

@@ -223,9 +223,13 @@ column* columnInfoParser(char* query) {
 
 
 
-char* getQuery() {
-	char* query = getString();
-	if (query[strlen(query) - 1] != ';') return NULL;
+int getQuery(char* query) {
+	printf("Äõ¸® ");
+	getString(query);
+	if (query[strlen(query) - 1] != ';') {
+		printf(" [;] ´©¶ô\n");
+		return -1;
+	}
 	else query[strlen(query) - 1] = '\0';
-	return query;
+	return 1;
 }

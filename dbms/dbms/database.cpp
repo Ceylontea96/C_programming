@@ -76,6 +76,8 @@ table* dropDB(database* db) {
 	return tb;
 }
 
+
+
 void useDB(char* dbName) {
 	database* db = getDbByName(dbName);
 	if (db != NULL) using_db = db;

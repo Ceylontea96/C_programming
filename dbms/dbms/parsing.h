@@ -27,5 +27,5 @@ int checkTbCommand(char* query);
 char* tableNameParser(char* query);
 column* columnInfoParser(char* query);
 
-char* getQuery();
+int getQuery(char* str);
 #endif
