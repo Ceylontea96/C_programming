@@ -52,35 +52,16 @@ delete from tb1 where no = 1;
 
 
 
-
-
-
-
-char* tbName = tableNameParser(command);
-	printf("table name [%s]\n", tbName);
-	printf("command = [%s]\n", command);
-
-	if (_strcmpi(command, "create") == 0) {
-
-	} else if (_strcmpi(command, "show") == 0) {
-
-	}
-	else if (_strcmpi(command, "use") == 0) {
-
-	}
-	else if (_strcmpi(command, "drop") == 0) {
-
-	}
-	else if (_strcmpi(command, "select") == 0) {
-
-	}
-	else if (_strcmpi(command, "insert") == 0) {
-
-	}
-	else if (_strcmpi(command, "delete") == 0) {
-
-	}
-	else if (_strcmpi(command, "update") == 0) {
-
-	}
-	return;
+1
+user
+1234
+2
+user
+1234
+create database db1;
+create database db2;
+show databases;
+use database db1;
+create table tb1(id varchar(100), pwd varchar(100), no int(10));
+insert into tb1(id, pwd, no) values('user', 'user1234', 1);
+insert into tb1(id, pwd, no) values('abc', 'alphabet', 2);

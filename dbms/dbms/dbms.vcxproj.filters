@@ -67,5 +67,8 @@
     <Text Include="testcase.txt">
       <Filter>소스 파일</Filter>
     </Text>
+    <Text Include="todo.txt">
+      <Filter>소스 파일</Filter>
+    </Text>
   </ItemGroup>
 </Project>

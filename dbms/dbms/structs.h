@@ -33,6 +33,7 @@ typedef struct column {
 
 typedef struct data {
 	char data[MAX];
+	int index;
 	int check;
 	struct data* link;
 } data;

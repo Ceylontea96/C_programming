@@ -1,0 +1,7 @@
+1. select target 적용 및 option 적용
+2. update 작성
+3. update 조건적용
+4. delete 작성
+5. delete 조건 적용
+7. insert시 type 및 size 제한
+6. 안쓰는 함수 정리하기

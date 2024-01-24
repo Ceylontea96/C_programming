@@ -5,9 +5,9 @@
 #include <string.h>
 #include <ctype.h>
 
-#define MAX 1000
+#define MAX 200
 
-char* getString();
+void getString(char* str);
 
 char* trim_left(char* str);
 char* trim_right(char* str);
