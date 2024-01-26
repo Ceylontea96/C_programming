@@ -5,7 +5,7 @@
 3. 문자열 파싱
 4. Linked-list 자료구조
 
-##개발환경
+## 개발환경
 - VIsual Studio 2019
 - Microsoft Visual C++ 2019
 - 
