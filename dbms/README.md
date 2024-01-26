@@ -5,6 +5,10 @@
 3. 문자열 파싱
 4. Linked-list 자료구조
 
+##개발환경
+- VIsual Studio 2019
+- Microsoft Visual C++ 2019
+- 
 ## 프로그램 시퀀스
 1. main을 통한 프로그램 시작
 2. process.cpp에서 전체적인 기능 관리
