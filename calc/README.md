@@ -19,7 +19,7 @@
 2. [Client의 경우] socket.exe 
 
 ### trouble shooting
-1. client socket file discrupter 관리
+1. 
    -
    
 
