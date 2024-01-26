@@ -4,7 +4,7 @@
 2. 자료구조(Stack) 후위연산식 사용
 3. 후위연산식 처리 알고리즘 구현
 
-##개발환경
+## 개발환경
 - VIsual Studio 2019
 - Microsoft Visual C++ 2019
 
