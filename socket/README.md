@@ -4,7 +4,7 @@
 2. Multi-Thread 사용
 3. Mutex를 통한 임계구역
 
-##개발환경
+## 개발환경
 - VIsual Studio 2019
 - Microsoft Visual C++ 2019
 
