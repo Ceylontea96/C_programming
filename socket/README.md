@@ -4,6 +4,10 @@
 2. Multi-Thread 사용
 3. Mutex를 통한 임계구역
 
+##개발환경
+- VIsual Studio 2019
+- Microsoft Visual C++ 2019
+
 ## 프로그램 시퀀스
 1. main을 통한 프로그램 시작
 2. 프로그램 시작 시 Argument 입력값을 통한 server 및 client 구분
