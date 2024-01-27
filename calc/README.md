@@ -9,10 +9,10 @@
 - Microsoft Visual C++ 2019
 
 ## 프로그램 시퀀스
-1. main을 통한 프로그램 시작
-2. 프로그램 시작 시 Argument 입력값을 통한 server 및 client 구분
-3. Server는 접속한 Client 관리 및 메시지 전달
-4. Client는 특정 Server에 연결하여 Client간 채팅
+1. 프로그램 실행
+2. 사칙연산식(괄호식 포함)을 입력
+3. 입력받은 식을 후위연산식으로 변환
+4. 변환된 후위연산식을 계산하여 결과값 출력
 
 ### trouble shooting
 1. 
