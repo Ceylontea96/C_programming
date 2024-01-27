@@ -14,10 +14,6 @@
 3. Server는 접속한 Client 관리 및 메시지 전달
 4. Client는 특정 Server에 연결하여 Client간 채팅
 
-### 프로그램 시작 cmd
-1. [Server의 경우] socket.exe (ip) (port) ()
-2. [Client의 경우] socket.exe 
-
 ### trouble shooting
 1. 
    -
