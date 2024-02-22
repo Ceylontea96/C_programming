@@ -20,6 +20,9 @@
 
 ### trouble shooting
 1. client socket file discrupter 관리
-   -
+   - Server에 연결된 Client socket을 관리하는 과정에서, 연결이 끊긴 socket을 제외하지 않던 문제 해결
+2. Mutex 사용
+   - 다수의 Client socket을 관리할 때 client socket 배열과 인덱스가 동시 동작 thread로 인해 제대로 관리되지 못했던 문제
+   - Mutex로 공유 변수를 제어하여 해결
    
 
